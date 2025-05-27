@@ -1,13 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
-
 const app = express();
+const authRoutes = require("./routes/auth");
+
+require("dotenv").config();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use("/api/auth", authRoutes);
 
 // Root route
 app.get("/", (req, res) => {
@@ -17,7 +19,7 @@ app.get("/", (req, res) => {
 // Load User model
 const User = require("./models/User");
 
-// Test user
+// Test user until I build the actual user input
 app.post("/api/test-user", async (req, res) => {
   try {
     const testUser = await User.create({

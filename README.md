@@ -1,111 +1,152 @@
-## 📄 `README.md`
-
-```markdown
-# PersonaForge 🧠
-
-An AI-powered consumer persona builder built with the MERN stack. Designed for startups and product teams to generate rich, research-backed user personas from minimal input using OpenAI.
+Here's your full `README.md` file written in clean markdown for your PersonaForge project:
 
 ---
 
-## 🚀 Tech Stack
+```md
+# 🧬 PersonaForge
 
-- **Frontend:** React (CRA), JSX, Fetch API
-- **Backend:** Node.js, Express.js, MongoDB, Mongoose
-- **AI:** OpenAI API
-- **Auth:** JWT (coming soon)
-- **Linting:** ESLint (Airbnb config)
+**AI-Powered Business Intelligence Dashboard for Startups**  
+Upload raw CSVs or connect APIs — PersonaForge cleans your data, summarizes insights, visualizes charts, and predicts future trends using AI.
 
 ---
 
-## 📂 Folder Structure
+## 🚀 Features
+
+- 🔐 User authentication (Register/Login)
+- 📁 CSV upload or API import
+- 🧼 Automated data cleaning
+- 🧠 OpenAI-powered business summaries
+- 📊 Auto-generated visual dashboards (Recharts)
+- 🔮 Predictive analytics
+- 💾 MongoDB storage per project
+- 💳 Stripe donation support
+- 🌐 About & Contact pages
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer      | Tech Used                             |
+| ---------- | ------------------------------------- |
+| Frontend   | React (Vite), Tailwind CSS, Recharts  |
+| Backend    | Node.js, Express, Mongoose            |
+| Database   | MongoDB Atlas                         |
+| AI / ML    | OpenAI API, regression-js (or custom) |
+| Deployment | Vercel (frontend), Render (backend)   |
+
+---
+
+## 📁 Folder Structure
 ```
 
 persona-forge/
-├── client/ # React frontend
-│ ├── public/ # index.html and static assets
-│ └── src/ # App, components, API services
-├── server/ # Node.js backend
-│ ├── models/ # Mongoose schemas
-│ ├── routes/ # Express routes (coming)
-│ ├── controllers/ # Route logic (coming)
-│ └── server.js # Main backend entry
+├── client/ # React + Vite frontend
+│ ├── src/
+│ │ ├── pages/
+│ │ ├── components/
+│ │ ├── hooks/
+│ │ └── App.jsx
+├── server/ # Express backend
+│ ├── controllers/
+│ ├── routes/
+│ ├── models/
+│ ├── utils/
+│ ├── server.js
+│ └── .env
 
 ````
 
 ---
 
-## 🧪 Running the Project
+## 🧪 Local Development
 
-### 1. Clone the repo
+### 📦 Install dependencies
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/persona-forge.git
-cd persona-forge
+cd client
+npm install
+
+cd ../server
+npm install
 ````
 
-### 2. Setup the backend
+### 🔑 Add environment variables
+
+Create `.env` in `server/`:
+
+```
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+OPENAI_API_KEY=your_openai_key
+STRIPE_SECRET_KEY=your_stripe_key
+```
+
+---
+
+## ⚙️ Run the app
+
+### 📡 Backend
 
 ```bash
 cd server
-npm install
-cp .env.example .env   # Create your env manually if not included
 npm run dev
 ```
 
-Add your Mongo URI to `.env`:
-
-```
-MONGO_URI=mongodb://127.0.0.1:27017/personaforge
-PORT=5000
-JWT_SECRET=yourSecretHere
-```
-
-### 3. Setup the frontend
+### 🌐 Frontend
 
 ```bash
-cd ../client
-npm install
-npm start
+cd client
+npm run dev
 ```
 
----
-
-## ✨ Features (Coming Soon)
-
-- [x] MongoDB connected
-- [x] React + Express working together
-- [x] ESLint configured
-- [ ] User Registration/Login (JWT)
-- [ ] OpenAI-powered persona generation
-- [ ] Project management dashboard
-- [ ] Save/share personas for client teams
+App runs at [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 🧠 Motivation
+## 📌 Pages & Routes
 
-Startups often don’t have time to run deep user research. **PersonaForge** aims to help teams quickly generate believable, testable user personas using the power of AI — fast, cheap, and developer-friendly.
-
----
-
-## 📌 TODOs
-
-- [ ] Build `/register` & `/login` routes
-- [ ] Connect OpenAI API
-- [ ] Generate persona based on prompt
-- [ ] Frontend persona builder UI
-
----
-
-## 🛠️ Contributing
-
-This project is still early — if you want to contribute, fork the repo and open a PR!
+| Path             | Description                    |
+| ---------------- | ------------------------------ |
+| `/`              | Landing page                   |
+| `/login`         | Login form                     |
+| `/register`      | Register form                  |
+| `/dashboard`     | Project list + Upload button   |
+| `/dashboard/new` | Upload CSV or API input        |
+| `/dashboard/:id` | View summary, charts, raw data |
+| `/donate`        | Stripe/PayPal donation page    |
+| `/about`         | Info about the app             |
+| `/contact`       | Contact page or support email  |
 
 ---
 
-## 📃 License
+## 🤖 AI Prompts (OpenAI)
 
-MIT
+- **Summary:**
+  _"Summarize trends, outliers, and patterns in this business data. Focus on what a startup founder should know."_
+
+- **Header Renaming (optional):**
+  _"Replace unreadable column headers with clean, understandable names."_
+
+---
+
+## ✅ MVP Progress
+
+- [x] Auth system
+- [x] Upload flow
+- [x] Data cleaning
+- [x] AI Summary
+- [x] Charts
+- [x] Predictions
+- [x] Dashboard UI
+- [x] About/Donate pages
+
+---
+
+## 📬 Contact
+
+Made with ❤️ by Christopher Piggott
+github - https://github.com/Cpiggott-lab
+linkedIn - https://www.linkedin.com/in/christopher-piggott-3bbb54351/
 
 ```
 
