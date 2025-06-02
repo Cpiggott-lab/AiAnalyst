@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import authService from "../services/authService";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -7,24 +7,37 @@ export default function RegisterPage() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:5000/api/auth/register", {
-      email,
-      password,
-    });
-    alert("User registered. Now log in.");
+    try {
+      await authService.register(email, password);
+      alert("User registered. Now log in.");
+    } catch (err) {
+      console.error("Registration error:", err);
+      alert("Registration failed.");
+    }
   };
 
   return (
-    <div style={{ margin: "2rem" }}>
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+    <div className="max-w-md mx-auto mt-16 p-6 border rounded shadow">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Register</h2>
+      <form onSubmit={handleRegister} className="flex flex-col gap-4">
         <input
-          placeholder="Password"
-          type="password"
-          onChange={(e) => setPassword(e.target.value)}
+          type="email"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+          className="border px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
         />
-        <button type="submit">Register</button>
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+          className="border px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+        />
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Register
+        </button>
       </form>
     </div>
   );
