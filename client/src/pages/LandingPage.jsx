@@ -4,27 +4,34 @@ export default function LandingPage() {
   const isLoggedIn = !!localStorage.getItem("token");
 
   return (
-    <div className="text-center p-8">
-      <h1 className="text-3xl font-bold">Welcome to PersonaForge</h1>
+    <div className="max-w-2xl mx-auto px-4 py-20 text-center">
+      <h1 className="text-4xl font-bold mb-4">Welcome to PersonaForge</h1>
+      <p className="text-lg text-gray-600 mb-8">
+        A smarter way to explore and analyze your data.
+      </p>
 
       {isLoggedIn ? (
-        <p className="mt-4">
-          <Link to="/dashboard" className="text-blue-600 underline">
-            Go to Dashboard
-          </Link>
-        </p>
+        <Link
+          to="/dashboard"
+          className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition"
+        >
+          Go to Dashboard
+        </Link>
       ) : (
-        <p className="mt-4 text-gray-600">
-          Please{" "}
-          <Link to="/login" className="text-blue-600 underline">
-            log in
-          </Link>{" "}
-          or{" "}
-          <Link to="/register" className="text-blue-600 underline">
-            register
+        <div className="flex flex-col md:flex-row justify-center gap-4">
+          <Link
+            to="/login"
+            className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition"
+          >
+            Login
           </Link>
-          .
-        </p>
+          <Link
+            to="/register"
+            className="border border-blue-500 text-blue-500 px-6 py-3 rounded hover:bg-blue-50 transition"
+          >
+            Register
+          </Link>
+        </div>
       )}
     </div>
   );
