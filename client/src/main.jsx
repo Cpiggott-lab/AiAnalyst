@@ -8,10 +8,13 @@ import ProjectViewPage from "./pages/ProjectViewPage";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import { AuthProvider } from "./context/AuthContext";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
+      <Navbar />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />ß
@@ -22,6 +25,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/projects/:id" element={<ProjectViewPage />} />
         </Routes>
       </BrowserRouter>
+      <Footer />
     </AuthProvider>
   </React.StrictMode>
 );
