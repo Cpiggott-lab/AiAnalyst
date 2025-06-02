@@ -11,7 +11,6 @@ import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./index.css";
-import "./App.css";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 
