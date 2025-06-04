@@ -29,13 +29,25 @@ export default function ProjectViewPage() {
   const generateSummary = async () => {
     setSummaryLoading(true);
     try {
-      const summary = await projectsService.generateSummary(id);
-      setProject((prev) => ({ ...prev, summary }));
+      const data = await projectsService.generateSummary(id);
+      setProject((prev) => ({ ...prev, summary: data }));
     } catch (err) {
       console.error("Error generating summary:", err);
     } finally {
       setSummaryLoading(false);
     }
+  };
+
+  const downloadCleanedData = () => {
+    const blob = new Blob([JSON.stringify(project.cleanedData, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${project.name || "cleaned_data"}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
