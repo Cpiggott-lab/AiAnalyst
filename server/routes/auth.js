@@ -12,6 +12,7 @@ router.post("/register", async (req, res) => {
     const { email, password } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = await User.create({ email, passwordHash });
+
     res.status(201).json({ message: "User created", userId: newUser._id });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -21,15 +22,17 @@ router.post("/register", async (req, res) => {
 // Login
 router.post("/login", async (req, res) => {
   try {
-    console.log("REQ.BODY:", req.body);
-
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ error: "Invalid credentials" });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
 
     const match = await bcrypt.compare(password, user.passwordHash);
-    if (!match) return res.status(401).json({ error: "Invalid credentials" });
+    if (!match) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
 
     const token = jwt.sign(
       {
@@ -47,14 +50,23 @@ router.post("/login", async (req, res) => {
         secure: false,
         sameSite: "lax",
       })
-      .json({ message: "Login successful", token });
+      .json({
+        message: "Login successful",
+        token,
+        user: {
+          _id: user._id,
+          email: user.email,
+          isAdmin: user.isAdmin || false,
+        },
+      });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
+// Authenticated user check
 router.get("/me", isAuthenticated, (req, res) => {
-  res.json(req.payload); // This gives you { id, email, isAdmin }
+  res.json(req.payload);
 });
 
 module.exports = router;

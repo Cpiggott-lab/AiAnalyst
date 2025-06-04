@@ -1,4 +1,3 @@
-// HTTP Requests class
 import axios from "axios";
 
 class ProjectsService {
@@ -6,6 +5,14 @@ class ProjectsService {
     this.api = axios.create({
       baseURL: "http://localhost:5001/api",
       withCredentials: true,
+    });
+
+    this.api.interceptors.request.use((config) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
     });
   }
 
@@ -24,12 +31,24 @@ class ProjectsService {
     return res.data.summary;
   }
 
-  async uploadCSV(file, name = "Uploaded Project") {
+  async upload(file, name = "Uploaded Project") {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("name", name);
 
     const res = await this.api.post("/projects/upload", formData);
+    return res.data;
+  }
+
+  async askQuestion(projectId, question) {
+    const res = await this.api.post(`/projects/${projectId}/question`, {
+      question,
+    });
+    return res.data;
+  }
+
+  async deleteProject(id) {
+    const res = await this.api.delete(`/projects/${id}`);
     return res.data;
   }
 }
