@@ -16,7 +16,7 @@ export default function UploadPage() {
     }
 
     try {
-      const project = await projectsService.uploadCSV(
+      const project = await projectsService.upload(
         file,
         projectName || "Untitled Project"
       );
