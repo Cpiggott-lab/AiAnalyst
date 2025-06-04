@@ -28,7 +28,7 @@ export default function Navbar() {
     <nav className="bg-gray-900 text-white px-10 py-4 shadow-md">
       <div className="flex justify-between items-center max-w-8xl mx-auto w-full">
         <Link to="/">
-          <h1 className="text-2xl font-bold">PersonaForge</h1>
+          <h1 className="text-2xl font-bold">AiAnalyst</h1>
         </Link>
 
         <div ref={menuRef} className="relative">

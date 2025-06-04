@@ -11,7 +11,7 @@ export default function AboutPage() {
         Whether you're validating a new product, refining your audience, or
         presenting to stakeholders, PersonaForge empowers you to transform
         complex CSV data into structured summaries, visualizations, and
-        AI-generated insights — in seconds.
+        AI-generated insights - in seconds.
       </p>
 
       <p className="mb-4 text-gray-800 leading-relaxed">
