@@ -1,153 +1,160 @@
-Here's your full `README.md` file written in clean markdown for your PersonaForge project:
+# AiAnalyst 🧠📊
 
----
-
-```md
-# 🧬 PersonaForge
-
-**AI-Powered Business Intelligence Dashboard for Startups**  
-Upload raw CSVs or connect APIs — PersonaForge cleans your data, summarizes insights, visualizes charts, and predicts future trends using AI.
+**AiAnalyst** is an AI-powered data intelligence platform that transforms raw CSV data into actionable insights. Built with the MERN stack (MongoDB, Express, React, Node.js) and OpenAI, AiAnalyst allows users to upload datasets, get auto-generated summaries, ask analytical questions, and visualize their findings—all through an intuitive web interface.
 
 ---
 
 ## 🚀 Features
 
-- 🔐 User authentication (Register/Login)
-- 📁 CSV upload or API import
-- 🧼 Automated data cleaning
-- 🧠 OpenAI-powered business summaries
-- 📊 Auto-generated visual dashboards (Recharts)
-- 🔮 Predictive analytics
-- 💾 MongoDB storage per project
-- 💳 Stripe donation support
-- 🌐 About & Contact pages
+- 🔐 **User Authentication** — Register, login, and securely manage your data.
+- 📁 **CSV Upload** — Drag-and-drop or select CSV files for instant ingestion.
+- 🤖 **AI-Powered Summaries** — Receive smart summaries of your data using OpenAI.
+- ❓ **Ask the AI** — Type custom questions about your dataset and get contextual answers.
+- 📊 **Dashboard View** — See all your uploaded projects, manage them, and get insights.
+- 🗑️ **Delete Projects** — Clean up and manage data with one click.
+- ⚡ **Responsive UI** — Fast, mobile-ready interface built with Tailwind CSS and React Router.
 
 ---
 
-## 🏗️ Tech Stack
+## 🧱 Tech Stack
 
-| Layer      | Tech Used                             |
-| ---------- | ------------------------------------- |
-| Frontend   | React (Vite), Tailwind CSS, Recharts  |
-| Backend    | Node.js, Express, Mongoose            |
-| Database   | MongoDB Atlas                         |
-| AI / ML    | OpenAI API, regression-js (or custom) |
-| Deployment | Vercel (frontend), Render (backend)   |
-
----
-
-## 📁 Folder Structure
-```
-
-persona-forge/
-├── client/ # React + Vite frontend
-│ ├── src/
-│ │ ├── pages/
-│ │ ├── components/
-│ │ ├── hooks/
-│ │ └── App.jsx
-├── server/ # Express backend
-│ ├── controllers/
-│ ├── routes/
-│ ├── models/
-│ ├── utils/
-│ ├── server.js
-│ └── .env
-
-````
+| Layer        | Tools                     |
+| ------------ | ------------------------- |
+| Frontend     | React, Vite, Tailwind CSS |
+| Backend      | Node.js, Express.js       |
+| Database     | MongoDB with Mongoose     |
+| AI Engine    | OpenAI API (GPT-4)        |
+| File Parsing | PapaParse, Multer         |
+| Auth         | JWT + Context API         |
 
 ---
 
-## 🧪 Local Development
+## 📂 Folder Structure
 
-### 📦 Install dependencies
+ai-analyst/
+├── client/ # React frontend
+│ ├── components/ # Reusable UI parts
+│ ├── context/ # Auth provider
+│ ├── pages/ # Route pages (Dashboard, Upload, etc.)
+│ ├── services/ # Axios-based API wrappers
+│ └── App.jsx
+├── server/ # Node + Express backend
+│ ├── routes/ # API routes (auth, projects)
+│ ├── models/ # Mongoose schemas
+│ ├── middleware/ # JWT auth checker
+│ ├── utils/ # OpenAI logic & CSV parsing
+│ └── app.js
+
+---
+
+## 🛠️ Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-cd client
-npm install
+git clone https://github.com/your-username/ai-analyst.git
+cd ai-analyst
 
-cd ../server
-npm install
-````
+2. Environment Setup
 
-### 🔑 Add environment variables
+Backend .env file (inside /server):
 
-Create `.env` in `server/`:
-
-```
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
+PORT=5001
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_jwt_secret
 OPENAI_API_KEY=your_openai_key
-STRIPE_SECRET_KEY=your_stripe_key
-```
 
----
+Frontend .env file (inside /client):
 
-## ⚙️ Run the app
+VITE_API_URL=http://localhost:5001
 
-### 📡 Backend
 
-```bash
+⸻
+
+3. Install Dependencies
+
+# Backend
+cd server
+npm install
+
+# Frontend
+cd ../client
+npm install
+
+
+⸻
+
+4. Start the App
+
+# Start backend
 cd server
 npm run dev
-```
 
-### 🌐 Frontend
-
-```bash
-cd client
+# In new terminal, start frontend
+cd ../client
 npm run dev
-```
 
-App runs at [http://localhost:5173](http://localhost:5173)
 
----
+⸻
 
-## 📌 Pages & Routes
+🔑 API Endpoints
 
-| Path             | Description                    |
-| ---------------- | ------------------------------ |
-| `/`              | Landing page                   |
-| `/login`         | Login form                     |
-| `/register`      | Register form                  |
-| `/dashboard`     | Project list + Upload button   |
-| `/dashboard/new` | Upload CSV or API input        |
-| `/dashboard/:id` | View summary, charts, raw data |
-| `/donate`        | Stripe/PayPal donation page    |
-| `/about`         | Info about the app             |
-| `/contact`       | Contact page or support email  |
+Auth
 
----
+Method	Endpoint	Description
+POST	/api/auth/register	Register a new user
+POST	/api/auth/login	Login and return JWT
+GET	/api/auth/me	Get logged-in user
 
-## 🤖 AI Prompts (OpenAI)
+Projects
 
-- **Summary:**
-  _"Summarize trends, outliers, and patterns in this business data. Focus on what a startup founder should know."_
+Method	Endpoint	Description
+POST	/api/projects/upload	Upload and parse CSV file
+GET	/api/projects	Fetch all user projects
+GET	/api/projects/:id	Get one project by ID
+POST	/api/projects/:id/summary	Generate AI summary
+POST	/api/projects/:id/question	Ask AI a custom question
+DELETE	/api/projects/:id	Delete a project
 
-- **Header Renaming (optional):**
-  _"Replace unreadable column headers with clean, understandable names."_
 
----
+⸻
 
-## ✅ MVP Progress
+🧠 How AI is Used
+	•	On upload, OpenAI is called with a custom prompt to summarize the dataset.
+	•	Users can ask follow-up questions, which are routed to OpenAI for context-based answers.
+	•	All AI interactions are designed to be dataset-aware and insight-driven.
 
-- [x] Auth system
-- [x] Upload flow
-- [x] Data cleaning
-- [x] AI Summary
-- [x] Charts
-- [x] Predictions
-- [x] Dashboard UI
-- [x] About/Donate pages
+⸻
 
----
+📌 Roadmap
+	•	📈 Charts and visual data graphs
+	•	🧾 Downloadable summaries (PDF/CSV)
+	•	🧠 Smarter AI with user feedback loop
+	•	🔗 Team sharing & collaboration
+	•	🧪 Unit + integration testing
 
-## 📬 Contact
+⸻
 
-Made with ❤️ by Christopher Piggott
-github - https://github.com/Cpiggott-lab
-linkedIn - https://www.linkedin.com/in/christopher-piggott-3bbb54351/
+🧪 Sample Prompt to OpenAI
 
-```
+“You are a business analyst. Summarize the key insights, trends, or outliers in the following dataset in plain English. Focus on areas relevant to sales performance, customer behavior, or operational issues.”
 
+⸻
+
+🧑‍💻 Developed By
+
+Christopher Piggott
+📧 crpiggottburner@gmail.com
+
+⸻
+
+📄 License
+
+Licensed under MIT. Free to use and modify.
+
+⸻
+
+💬 Feedback
+
+Found a bug? Want a feature? Open an issue or submit a PR!
 ```

@@ -58,6 +58,13 @@ export default function Navbar() {
                     >
                       My Dashboard
                     </Link>
+                    <Link
+                      to="/team-management"
+                      className="px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Team Management
+                    </Link>
                   </>
                 ) : (
                   <>

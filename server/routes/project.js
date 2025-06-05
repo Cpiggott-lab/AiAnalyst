@@ -5,7 +5,11 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 
 const {
-  uploadCsvHandler,
+  generateChartDataUniversal,
+} = require("../controllers/AiChartDataPrompt");
+
+const {
+  uploadHandler,
   getAllProjects,
   getProjectById,
   deleteProject,
@@ -17,7 +21,7 @@ const {
 } = require("../controllers/AiSummaryPrompt");
 
 // Upload CSV
-router.post("/upload", verifyToken, upload.single("file"), uploadCsvHandler);
+router.post("/upload", verifyToken, upload.single("file"), uploadHandler);
 
 // Get all projects
 router.get("/", verifyToken, getAllProjects);
@@ -33,5 +37,8 @@ router.post("/:id/summary", verifyToken, generateSummary);
 
 // Ask a follow-up question about a summary
 router.post("/:id/question", verifyToken, askSummaryQuestion);
+
+// Generating chart data
+router.get("/:id/chartdata-universal", verifyToken, generateChartDataUniversal);
 
 module.exports = router;

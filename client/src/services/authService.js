@@ -4,8 +4,6 @@ const API = "http://localhost:5001/api/auth";
 
 class AuthService {
   async register(email, password) {
-    console.log("Register request body:", req.body);
-
     const response = await axios.post(`${API}/register`, { email, password });
     return response.data;
   }

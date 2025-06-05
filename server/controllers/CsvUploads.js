@@ -3,11 +3,11 @@ const path = require("path");
 const Papa = require("papaparse");
 const Project = require("../models/Project");
 
-exports.uploadCsvHandler = async (req, res) => {
+exports.uploadHandler = async (req, res) => {
   try {
-    console.log("req.file:", req.file);
-    console.log("req.body:", req.body);
-    console.log("req.user:", req.user);
+    // console.log("req.file:", req.file);
+    // console.log("req.body:", req.body);
+    // console.log("req.user:", req.user);
 
     const filePath = req.file.path;
     const file = fs.readFileSync(filePath, "utf8");
@@ -26,7 +26,8 @@ exports.uploadCsvHandler = async (req, res) => {
       userId: req.user.id,
       rawData: parsed.data,
       cleanedData: cleaned,
-      summary: "Summary to be generated in future step",
+      summary: "Summary is being generated...",
+      chartData: {},
     });
 
     fs.unlinkSync(filePath);

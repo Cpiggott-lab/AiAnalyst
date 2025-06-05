@@ -1,18 +1,25 @@
-//Add in graph functions and import graph data from AI
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import projectsService from "../services/projectsService";
 import FollowUpChat from "../components/FollowUpChat";
+import BarChartComponent from "../components/charts/BarChartComponent";
+import PieChartComponent from "../components/charts/PieChartComponent";
+import LineChartComponent from "../components/charts/LineChartComponent";
+import HistogramComponent from "../components/charts/HistogramComponent";
 
 export default function ProjectViewPage() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [summaryLoading, setSummaryLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [chartLoading, setChartLoading] = useState(false);
+
+  // Fetch project info, including summary and chartData if present
   useEffect(() => {
     const fetchProject = async () => {
+      setLoading(true);
       try {
         const data = await projectsService.getProjectById(id);
         setProject(data);
@@ -22,23 +29,55 @@ export default function ProjectViewPage() {
         setLoading(false);
       }
     };
-
     fetchProject();
   }, [id]);
 
-  const generateSummary = async () => {
-    setSummaryLoading(true);
-    try {
-      const data = await projectsService.generateSummary(id);
-      setProject((prev) => ({ ...prev, summary: data }));
-    } catch (err) {
-      console.error("Error generating summary:", err);
-    } finally {
-      setSummaryLoading(false);
+  // Generate summary if missing and not already loading
+  useEffect(() => {
+    if (!project) return;
+    if ((!project.summary || project.summary.length < 5) && !summaryLoading) {
+      setSummaryLoading(true);
+      projectsService
+        .generateSummary(project._id)
+        .then((summary) => {
+          setProject((prev) => ({ ...prev, summary }));
+        })
+        .catch(() => {
+          setProject((prev) => ({
+            ...prev,
+            summary: "Failed to load summary.",
+          }));
+        })
+        .finally(() => setSummaryLoading(false));
     }
-  };
+  }, [project, summaryLoading]);
+
+  // Generate chart data if missing and not already loading
+  useEffect(() => {
+    if (!project) return;
+    if (
+      !project.summary ||
+      project.summary === "Summary is being generated..." ||
+      project.summary.length < 5
+    ) {
+      setSummaryLoading(true);
+      projectsService
+        .generateSummary(project._id)
+        .then((summary) => {
+          setProject((prev) => ({ ...prev, summary }));
+        })
+        .catch(() => {
+          setProject((prev) => ({
+            ...prev,
+            summary: "Failed to load summary.",
+          }));
+        })
+        .finally(() => setSummaryLoading(false));
+    }
+  }, [project, summaryLoading]);
 
   const downloadCleanedData = () => {
+    if (!project) return;
     const blob = new Blob([JSON.stringify(project.cleanedData, null, 2)], {
       type: "application/json",
     });
@@ -61,14 +100,28 @@ export default function ProjectViewPage() {
         Date: {new Date(project.createdAt).toLocaleDateString()}
       </p>
 
-      <div className="text-center mb-6">
-        <button
-          onClick={generateSummary}
-          disabled={summaryLoading}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-        >
-          {summaryLoading ? "Generating..." : "Generate Summary"}
-        </button>
+      {/* Cleaned Data preview */}
+      <div className="mb-4">
+        <h2 className="flex justify-center text-xl font-semibold mb-2">
+          Cleaned Data (Preview)
+        </h2>
+        <pre className="bg-gray-800 text-white text-sm p-4 rounded overflow-y-scroll max-h-72 whitespace-pre-wrap">
+          {JSON.stringify(project.cleanedData.slice(0, 5), null, 2)}
+        </pre>
+      </div>
+
+      {/* Summary section */}
+      <div className="mb-8">
+        <h2 className="flex justify-center text-xl font-semibold mb-2">
+          Summary
+        </h2>
+        {summaryLoading ? (
+          <div>Loading summary...</div>
+        ) : (
+          <p className="whitespace-pre-wrap bg-gray-100 p-4 rounded">
+            {project.summary || "Pending summary generation."}
+          </p>
+        )}
       </div>
 
       {project.summary && (
@@ -77,21 +130,64 @@ export default function ProjectViewPage() {
         </div>
       )}
 
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Summary</h2>
-        <p className="whitespace-pre-wrap bg-gray-100 p-4 rounded">
-          {project.summary || "Pending summary generation."}
-        </p>
+      {/* Chart section */}
+      <div className="my-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {chartLoading && <div>Loading charts...</div>}
+        {project.chartData?.recommendedCharts?.length > 0
+          ? project.chartData.recommendedCharts.map((chart, idx) => {
+              switch (chart.type) {
+                case "bar":
+                  return (
+                    <BarChartComponent
+                      key={idx}
+                      data={chart.data}
+                      xKey="label"
+                      yKey="count"
+                      title={chart.title}
+                    />
+                  );
+                case "pie":
+                  return (
+                    <PieChartComponent
+                      key={idx}
+                      data={chart.data}
+                      nameKey="label"
+                      valueKey="count"
+                      title={chart.title}
+                    />
+                  );
+                case "line":
+                  return (
+                    <LineChartComponent
+                      key={idx}
+                      data={chart.data}
+                      xKey="date"
+                      yKey="value"
+                      title={chart.title}
+                    />
+                  );
+                case "histogram":
+                  return (
+                    <HistogramComponent
+                      key={idx}
+                      data={chart.data}
+                      xKey="bin"
+                      yKey="count"
+                      title={chart.title}
+                    />
+                  );
+                default:
+                  return null;
+              }
+            })
+          : !chartLoading &&
+            project.chartData && (
+              <div className="text-center col-span-2">
+                No charts available for this data.
+              </div>
+            )}
       </div>
-
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">Cleaned Data (Preview)</h2>
-        <pre className="bg-gray-800 text-white text-sm p-4 rounded overflow-y-scroll max-h-72 whitespace-pre-wrap">
-          {JSON.stringify(project.cleanedData.slice(0, 5), null, 2)}
-        </pre>
-      </div>
-
-      <div className="text-center">
+      <div className="text-center mb-8">
         <button
           onClick={downloadCleanedData}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"

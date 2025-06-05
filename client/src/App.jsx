@@ -10,6 +10,7 @@ import ContactPage from "./pages/ContactPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import UserSettings from "./pages/SettingsPage";
+import TeamManagement from "./pages/TeamManagementPage";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/settings" element={<UserSettings />} />
+            <Route path="/team-management" element={<TeamManagement />} />
           </Routes>
         </div>
         <Footer />

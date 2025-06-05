@@ -94,7 +94,6 @@ Mike, mike@email.com, 2023-03-05, 25, US`}
         </ol>
       </div>
 
-      {/* Instant Insights Images */}
       <div className="my-10">
         <h2 className="text-xl font-semibold mb-2">Instant Insights</h2>
         <div className="grid md:grid-cols-3 gap-6">

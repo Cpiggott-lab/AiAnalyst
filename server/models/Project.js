@@ -6,6 +6,7 @@ const projectSchema = new mongoose.Schema({
   rawData: { type: Array, required: true },
   cleanedData: { type: Array, required: true },
   summary: { type: String },
+  chartData: { type: Object, default: {} },
   createdAt: { type: Date, default: Date.now },
 });
 

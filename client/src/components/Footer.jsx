@@ -20,7 +20,7 @@ export default function Footer() {
         </a>
       </div>
       <p className="text-center text-xs text-gray-400 mt-2 mb-0">
-        © {new Date().getFullYear()} PersonaForge. All rights reserved.
+        © {new Date().getFullYear()} AiAnalyst. All rights reserved.
       </p>
     </footer>
   );

@@ -51,6 +51,11 @@ class ProjectsService {
     const res = await this.api.delete(`/projects/${id}`);
     return res.data;
   }
+
+  async getProjectChartDataUniversal(id) {
+    const res = await this.api.get(`/projects/${id}/chartdata-universal`);
+    return res.data;
+  }
 }
 
 const projectsService = new ProjectsService();
