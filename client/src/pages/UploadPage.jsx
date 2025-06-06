@@ -51,57 +51,61 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="text-center p-8">
-      <h1 className="text-2xl font-semibold mb-6">Upload CSV</h1>
+    <div className="flex justify-center py-16">
+      <div className="bg-white rounded-lg shadow-md p-8 w-[80vw] max-w-2xl">
+        <h1 className="text-3xl font-bold mb-6 text-center">Upload CSV File</h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center gap-4"
-      >
-        <input
-          type="text"
-          value={projectName}
-          onChange={(e) => setProjectName(e.target.value)}
-          placeholder="Enter project name"
-          className="border px-4 py-2 rounded w-full max-w-md"
-        />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <input
+            type="text"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="Enter project name"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md text-black"
+          />
 
-        <div
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-8 w-full max-w-md text-center transition-colors ${
-            dragActive ? "bg-gray-100" : "bg-white"
-          }`}
-        >
-          <p className="text-gray-500">
-            {file ? file.name : "Drag & drop your CSV file here"}
-          </p>
-        </div>
-
-        <input
-          type="file"
-          accept=".csv"
-          onChange={handleFileChange}
-          className="hidden"
-          id="csv-upload"
-        />
-        <label
-          htmlFor="csv-upload"
-          className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
-        >
-          Choose File
-        </label>
-
-        {file && (
-          <button
-            type="submit"
-            className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`w-full border-2 border-dashed rounded-md p-6 text-center text-gray-600 cursor-pointer transition ${
+              dragActive ? "bg-gray-100 border-blue-400" : "bg-gray-50"
+            }`}
           >
-            Upload
-          </button>
-        )}
-      </form>
+            <p className="mb-2">
+              {file ? (
+                <span className="text-green-600 font-semibold">
+                  {file.name}
+                </span>
+              ) : (
+                "Drag & drop your CSV file here"
+              )}
+            </p>
+            <label
+              htmlFor="csv-upload"
+              className="inline-block mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer"
+            >
+              Choose File
+            </label>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className="hidden"
+              id="csv-upload"
+            />
+          </div>
+
+          {file && (
+            <button
+              type="submit"
+              className="w-full bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600 text-lg font-semibold"
+            >
+              Upload Project
+            </button>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

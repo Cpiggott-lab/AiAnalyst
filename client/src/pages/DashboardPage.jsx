@@ -22,7 +22,6 @@ export default function DashboardPage() {
         setLoading(false);
       }
     };
-
     fetchProjects();
   }, []);
 
@@ -55,41 +54,45 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
-        <h1 className="text-3xl font-bold text-center md:text-left">
-          Your Projects
-        </h1>
+    <div className="flex flex-col items-center py-10 text-center">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-[80vw]">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <h1 className="text-3xl font-bold text-center md:text-left">
+            Your Projects
+          </h1>
 
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSearch}
-          placeholder="Search projects..."
-          className="w-full md:w-1/2 px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-        />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search projects..."
+            className="w-full md:w-1/2 px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+          />
 
-        <button
-          onClick={() => navigate("/upload")}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          + New Project
-        </button>
+          <button
+            onClick={() => navigate("/upload")}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            + New Project
+          </button>
+        </div>
       </div>
 
       {filteredProjects.length === 0 ? (
-        <p className="text-center text-gray-600">
-          No projects match your search.
-        </p>
+        <div className="bg-white rounded-lg shadow-md p-6 w-[80vw]">
+          <div className="max-w-4xl mx-auto px-4 text-gray-600">
+            No projects match your search.
+          </div>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-[80vw]">
           {filteredProjects.map((project) => (
             <div
               key={project._id}
-              className="bg-white p-6 rounded shadow-sm border hover:shadow-md transition"
+              className="bg-white p-6 rounded-lg shadow-md border hover:shadow-lg transition"
             >
               <div className="flex justify-between items-start mb-4">
-                <div>
+                <div className="text-left">
                   <h2 className="text-xl font-semibold">{project.name}</h2>
                   <p className="text-gray-600 text-sm">
                     Created: {new Date(project.createdAt).toLocaleDateString()}
@@ -103,7 +106,7 @@ export default function DashboardPage() {
                 </button>
               </div>
 
-              <div className="bg-gray-900 text-white text-xs rounded p-4 overflow-auto max-h-40 whitespace-pre-wrap mb-4">
+              <div className="bg-gray-900 text-white text-xs rounded p-4 overflow-auto max-h-40 whitespace-pre-wrap mb-4 text-left">
                 {project.cleanedData?.length > 0 ? (
                   <pre>
                     {JSON.stringify(project.cleanedData.slice(0, 3), null, 2)}
@@ -113,12 +116,14 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              <Link
-                to={`/projects/${project._id}`}
-                className="inline-block text-blue-600 hover:underline font-medium"
-              >
-                View →
-              </Link>
+              <div className="text-right">
+                <Link
+                  to={`/projects/${project._id}`}
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  View →
+                </Link>
+              </div>
             </div>
           ))}
         </div>
