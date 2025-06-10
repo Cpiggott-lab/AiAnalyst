@@ -34,10 +34,9 @@ export default function ProjectViewPage() {
 
   // Generate summary if missing
   useEffect(() => {
-    if (!id || summaryLoading) return;
+    if (!id || summaryLoading || !project) return;
 
-    // Don't generate if project already has summary
-    if (project?.summary) return;
+    if (project.summary) return;
 
     setSummaryLoading(true);
     projectsService

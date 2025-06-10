@@ -1,20 +1,46 @@
 import BarChart from "../assets/Bar-Chart.png";
 import PieChart from "../assets/Pie-Chart.png";
 import LineChart from "../assets/Line-Chart.png";
-
+import AiAnalystImage from "../assets/AiAnalystBanner.png";
+import { Link } from "react-router-dom";
 export default function LandingPage() {
   return (
-    <div className="flex flex-col items-center py-20 text-center">
-      <div className="bg-white rounded-lg shadow-md p-8 mb-10 w-[80vw] h-[60vh] flex flex-col justify-center">
-        <h1 className="text-5xl font-bold mb-6">
-          Welcome to your personal AiAnalyst
-        </h1>
-        <p className="text-2xl text-gray-600">
-          A smarter way to explore and analyze your data.
-        </p>
+    <div className="flex flex-col items-center  text-center">
+      <div className="relative w-[100vw] h-[70vh] mb-10 rounded-lg overflow-hidden shadow-md">
+        <img
+          src={AiAnalystImage}
+          alt="AI Banner Background"
+          className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
+          draggable="false"
+        />
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 space-y-6">
+          <h1 className="text-5xl font-bold text-black drop-shadow-md">
+            Welcome to your personal AiAnalyst
+          </h1>
+          <p className="text-2xl text-black drop-shadow-sm">
+            A smarter way to explore and analyze your data.
+          </p>
+          <p className="text-lg text-black">
+            It's as easy as{" "}
+            <Link
+              to="/register"
+              className="text-blue-600 font-semibold hover:underline"
+            >
+              registering
+            </Link>{" "}
+            and{" "}
+            <Link
+              to="/upload"
+              className="text-blue-600 font-semibold hover:underline"
+            >
+              uploading
+            </Link>{" "}
+            your data.
+          </p>
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 mb-10 w-[80vw] h-[55vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-10 w-[80vw] h-[65vh] overflow-hidden flex flex-col">
         <h2 className="text-3xl font-bold mb-6 text-center">
           Instantly Clean Messy Data
         </h2>
@@ -23,7 +49,7 @@ export default function LandingPage() {
             <h3 className="text-left text-xl font-semibold text-gray-700 mb-3">
               Before (Messy Data)
             </h3>
-            <pre className="bg-gray-900 text-gray-100 rounded p-4 text-lg font-mono text-left overflow-x-auto flex-1">
+            <pre className="bg-black text-red-500 rounded p-4 text-lg font-mono text-left overflow-x-auto flex-1">
               {`name, email, signup_date, age, country
 John Doe, johndoe(at)email, 12/32/2022, 27, 
 ,  , 01/15/2023, , USA
@@ -41,7 +67,7 @@ Noah, noah@email.com, , , USA`}
             <h3 className="text-left text-xl font-semibold text-gray-700 mb-3">
               After (Cleaned Data)
             </h3>
-            <pre className="bg-gray-800 text-green-100 rounded p-4 text-lg font-mono text-left overflow-x-auto flex-1">
+            <pre className="bg-black text-green-500 rounded p-4 text-lg font-mono text-left overflow-x-auto flex-1">
               {`name, email, signup_date, age, country
 John Doe, johndoe@email.com, 2022-12-31, 27, Unknown
 Sarah, sarah@email.com, 2023-03-10, N/A, Germany
@@ -56,7 +82,7 @@ Noah, noah@email.com, N/A, N/A, USA`}
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 mb-10 w-[80vw] h-[40vh] overflow-y-auto flex flex-col justify-center">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-10 w-[80vw] h-[60vh] overflow-y-auto flex flex-col justify-center">
         <h2 className="text-3xl font-bold mb-4 text-center">How It Works</h2>
 
         <div className="bg-gray-50 rounded-lg px-4 py-6 w-full">
@@ -80,7 +106,7 @@ Noah, noah@email.com, N/A, N/A, USA`}
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 mb-10 w-[80vw] h-[40vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-10 w-[80vw] h-[60vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-6">Instant Insights</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {[BarChart, PieChart, LineChart].map((src, idx) => {
@@ -112,7 +138,7 @@ Noah, noah@email.com, N/A, N/A, USA`}
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 w-[80vw] h-[40vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-md p-6 w-[80vw] h-[50vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-6">No-Code Data Rules</h2>
         <div className="flex flex-col gap-4 mx-auto max-w-md text-left text-lg">
           {[

@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-4 mt-auto mb-0">
+    <footer className="bg-black text-white py-3 mt-auto mb-0">
       <div className="flex justify-center space-x-6 text-sm">
         <a
           href="https://github.com/Cpiggott-lab"

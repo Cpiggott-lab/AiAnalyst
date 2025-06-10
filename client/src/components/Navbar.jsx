@@ -27,10 +27,10 @@ export default function Navbar() {
   const isLoggedIn = !!localStorage.getItem("token");
 
   return (
-    <nav className="bg-gray-900 text-white px-7 py-2 shadow-md">
-      <div className="flex justify-between items-center max-w-8xl mx-auto w-full">
+    <nav className="bg-black text-white px-7 py-2 shadow-md">
+      <div className="flex justify-between items-center max-w-8xl mx-auto w-full ">
         <Link to="/">
-          <h1 className="text-2xl font-bold">AiAnalyst</h1>
+          <h1 className="text-2xl font-bold hover:opacity-80 ">AiAnalyst</h1>
         </Link>
 
         <div className="flex items-center gap-4">
@@ -117,7 +117,7 @@ export default function Navbar() {
           {isLoggedIn ? (
             <Link
               to="/dashboard"
-              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
+              className="bg-white text-black px-2 py-1 rounded hover:opacity-80 transition"
             >
               Dashboard
             </Link>
@@ -125,13 +125,13 @@ export default function Navbar() {
             <div className="flex flex-col md:flex-row items-center gap-4">
               <Link
                 to="/login"
-                className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
+                className="bg-white text-black px-2 py-1 rounded hover:opacity-80 transition"
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
+                className="bg-white text-black px-2 py-1 rounded hover:opacity-80 transition"
               >
                 Register
               </Link>

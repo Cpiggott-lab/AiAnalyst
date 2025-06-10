@@ -71,9 +71,9 @@ export default function DashboardPage() {
 
           <button
             onClick={() => navigate("/upload")}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-600 cursor-pointer"
           >
-            + New Project
+            + New
           </button>
         </div>
       </div>

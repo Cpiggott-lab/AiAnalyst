@@ -83,7 +83,7 @@ export default function UploadPage() {
             </p>
             <label
               htmlFor="csv-upload"
-              className="inline-block mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer"
+              className="inline-block mt-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-600 cursor-pointer"
             >
               Choose File
             </label>
