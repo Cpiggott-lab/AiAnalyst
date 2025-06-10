@@ -43,7 +43,6 @@ export default function ProjectViewPage() {
     projectsService
       .generateSummary(id)
       .then((summary) => {
-        console.log("Set summary:", summary);
         setProject((prev) => ({
           ...prev,
           summary: summary || "No summary generated.",
