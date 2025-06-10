@@ -32,49 +32,56 @@ export default function ProjectViewPage() {
     fetchProject();
   }, [id]);
 
-  // Generate summary if missing and not already loading
+  // Generate summary if missing
   useEffect(() => {
-    if (!project) return;
-    if ((!project.summary || project.summary.length < 5) && !summaryLoading) {
-      setSummaryLoading(true);
-      projectsService
-        .generateSummary(project._id)
-        .then((summary) => {
-          setProject((prev) => ({ ...prev, summary }));
-        })
-        .catch(() => {
-          setProject((prev) => ({
-            ...prev,
-            summary: "Failed to load summary.",
-          }));
-        })
-        .finally(() => setSummaryLoading(false));
-    }
-  }, [project, summaryLoading]);
+    if (!id || summaryLoading) return;
 
-  // Generate chart data if missing and not already loading
+    // Don't generate if project already has summary
+    if (project?.summary) return;
+
+    setSummaryLoading(true);
+    projectsService
+      .generateSummary(id)
+      .then((summary) => {
+        console.log("Set summary:", summary);
+        setProject((prev) => ({
+          ...prev,
+          summary: summary || "No summary generated.",
+        }));
+      })
+      .catch(() => {
+        setProject((prev) => ({
+          ...prev,
+          summary: "Failed to load summary.",
+        }));
+      })
+      .finally(() => setSummaryLoading(false));
+  }, [id, project?.summary, summaryLoading]);
+
+  // Generate chart data if missing
   useEffect(() => {
-    if (!project) return;
+    if (!project || chartLoading) return;
+
     if (
-      !project.summary ||
-      project.summary === "Summary is being generated..." ||
-      project.summary.length < 5
+      !project.chartData ||
+      !project.chartData.recommendedCharts ||
+      project.chartData.recommendedCharts.length === 0
     ) {
-      setSummaryLoading(true);
+      setChartLoading(true);
       projectsService
-        .generateSummary(project._id)
-        .then((summary) => {
-          setProject((prev) => ({ ...prev, summary }));
+        .generateChartData(project._id)
+        .then((res) => {
+          setProject((prev) => ({ ...prev, chartData: res.chartData }));
         })
         .catch(() => {
           setProject((prev) => ({
             ...prev,
-            summary: "Failed to load summary.",
+            chartData: null,
           }));
         })
-        .finally(() => setSummaryLoading(false));
+        .finally(() => setChartLoading(false));
     }
-  }, [project, summaryLoading]);
+  }, [project, chartLoading]);
 
   const downloadCleanedData = () => {
     if (!project) return;
@@ -187,6 +194,7 @@ export default function ProjectViewPage() {
               </div>
             )}
       </div>
+
       <div className="text-center mb-8">
         <button
           onClick={downloadCleanedData}

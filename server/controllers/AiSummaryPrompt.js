@@ -79,7 +79,7 @@ Please answer the user's question clearly, referencing only the provided summary
     `;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4-1106-preview",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: "You are a helpful business analyst." },
         { role: "user", content: prompt },

@@ -28,6 +28,7 @@ class ProjectsService {
 
   async generateSummary(id) {
     const res = await this.api.post(`/projects/${id}/summary`);
+    console.log("generateSummary response:", res.data); //debugging
     return res.data.summary;
   }
 
@@ -52,7 +53,7 @@ class ProjectsService {
     return res.data;
   }
 
-  async getProjectChartDataUniversal(id) {
+  async generateChartData(id) {
     const res = await this.api.get(`/projects/${id}/chartdata-universal`);
     return res.data;
   }

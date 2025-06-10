@@ -63,7 +63,7 @@ ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
 
     // Send the prompt to OpenAI
     const response = await openai.chat.completions.create({
-      model: "gpt-4-1106-preview",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: "You are a helpful business data analyst." },
         { role: "user", content: chartPrompt },
@@ -82,9 +82,13 @@ ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
         .replace(/```$/, "");
     }
 
-    // Remove comments so JSON.parse wont break.
+    // Remove comments so JSON.parse won't break
     openAIContent = openAIContent.replace(/^\s*\/\/.*$/gm, "");
     openAIContent = openAIContent.replace(/,?\s*\/\/.*$/gm, "");
+
+    //  Strip ellipses and trailing commas
+    openAIContent = openAIContent.replace(/\.\.\./g, "");
+    openAIContent = openAIContent.replace(/,\s*([\]}])/g, "$1");
 
     // Now parse JSON
     let chartData = {};
