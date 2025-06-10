@@ -15,6 +15,11 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    teamLeaderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
   { timestamps: true }
 );

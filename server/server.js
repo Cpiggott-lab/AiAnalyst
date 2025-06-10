@@ -22,8 +22,11 @@ app.use(cookieParser());
 // Routes
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/project");
+// const teamRoutes = require("./routes/teamRoutes");
+
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
+// app.use("/api/team", teamRoutes);
 
 // Root route
 app.get("/", (req, res) => {

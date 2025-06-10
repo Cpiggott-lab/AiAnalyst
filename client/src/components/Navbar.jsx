@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import moreIcon from "../assets/more.png";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -26,7 +27,7 @@ export default function Navbar() {
   const isLoggedIn = !!localStorage.getItem("token");
 
   return (
-    <nav className="bg-gray-900 text-white px-8 py-4 shadow-md">
+    <nav className="bg-gray-900 text-white px-7 py-2 shadow-md">
       <div className="flex justify-between items-center max-w-8xl mx-auto w-full">
         <Link to="/">
           <h1 className="text-2xl font-bold">AiAnalyst</h1>
@@ -36,9 +37,13 @@ export default function Navbar() {
           <div ref={menuRef} className="relative">
             <button
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="hover:text-gray-300 px-4"
+              className="w-10 h-10 flex items-center justify-center"
             >
-              Menu
+              <img
+                src={moreIcon}
+                alt="Burger menu icon"
+                className="w-8 h-8 object-contain cursor-pointer hover:opacity-80"
+              />
             </button>
 
             {menuOpen && (
@@ -59,13 +64,6 @@ export default function Navbar() {
                         onClick={() => setMenuOpen(false)}
                       >
                         My Dashboard
-                      </Link>
-                      <Link
-                        to="/team-management"
-                        className="px-4 py-2 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        Team Management
                       </Link>
                     </>
                   ) : (
@@ -100,13 +98,6 @@ export default function Navbar() {
                   >
                     Contact
                   </Link>
-                  <Link
-                    to="/settings"
-                    className="px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Settings
-                  </Link>
                 </div>
 
                 {user && (
@@ -126,21 +117,21 @@ export default function Navbar() {
           {isLoggedIn ? (
             <Link
               to="/dashboard"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
             >
-              Go to Dashboard
+              Dashboard
             </Link>
           ) : (
             <div className="flex flex-col md:flex-row items-center gap-4">
               <Link
                 to="/login"
-                className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition"
+                className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="border border-blue-500 text-blue-500 px-6 py-3 rounded hover:bg-blue-50 transition"
+                className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
               >
                 Register
               </Link>
