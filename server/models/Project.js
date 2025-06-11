@@ -8,6 +8,13 @@ const projectSchema = new mongoose.Schema({
   summary: { type: String },
   chartData: { type: Object, default: {} },
   createdAt: { type: Date, default: Date.now },
+  notes: [
+    {
+      text: String,
+      createdAt: { type: Date, default: Date.now },
+      createdBy: String,
+    },
+  ],
 });
 
 module.exports = mongoose.model("Project", projectSchema);

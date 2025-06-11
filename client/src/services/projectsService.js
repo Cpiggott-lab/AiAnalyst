@@ -57,6 +57,11 @@ class ProjectsService {
     const res = await this.api.get(`/projects/${id}/chartdata-universal`);
     return res.data;
   }
+
+  async updateNote(id, note) {
+    const res = await this.api.put(`/projects/${id}/note`, { note });
+    return res.data;
+  }
 }
 
 const projectsService = new ProjectsService();

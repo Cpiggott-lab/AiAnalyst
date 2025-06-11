@@ -83,3 +83,25 @@ exports.deleteProject = async (req, res) => {
     res.status(500).json({ error: "Failed to delete project" });
   }
 };
+exports.updateNote = async (req, res) => {
+  try {
+    const { note } = req.body;
+    const project = await Project.findById(req.params.id);
+
+    if (!project || project.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    project.notes.push({
+      text: note,
+      createdAt: new Date(),
+      createdBy: req.user?.email || "System", // Optional
+    });
+
+    await project.save();
+    res.json({ message: "Note added", notes: project.notes });
+  } catch (err) {
+    console.error("Note update error:", err);
+    res.status(500).json({ error: "Failed to update note" });
+  }
+};

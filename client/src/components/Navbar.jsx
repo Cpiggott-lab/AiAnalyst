@@ -129,12 +129,6 @@ export default function Navbar() {
               >
                 Login
               </Link>
-              <Link
-                to="/register"
-                className="bg-white text-black px-2 py-1 rounded hover:opacity-80 transition"
-              >
-                Register
-              </Link>
             </div>
           )}
         </div>

@@ -58,7 +58,7 @@ export default function DashboardPage() {
       <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-[80vw]">
         <div className="max-w-4xl mx-auto px-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h1 className="text-3xl font-bold text-center md:text-left">
-            Your Projects
+            Projects
           </h1>
 
           <input

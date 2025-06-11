@@ -13,6 +13,7 @@ const {
   getAllProjects,
   getProjectById,
   deleteProject,
+  updateNote,
 } = require("../controllers/CsvUploads");
 
 const {
@@ -40,5 +41,8 @@ router.post("/:id/question", verifyToken, askSummaryQuestion);
 
 // Generating chart data
 router.get("/:id/chartdata-universal", verifyToken, generateChartDataUniversal);
+
+// Add Notes
+router.put("/:id/note", verifyToken, updateNote);
 
 module.exports = router;
