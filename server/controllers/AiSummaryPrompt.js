@@ -78,13 +78,11 @@ Please answer the user's question clearly, referencing only the provided summary
     `;
 
     const response = await openai.chat.completions.create({
-      // model: "gpt-4-1106-preview",
       model: "o4-mini",
       messages: [
         { role: "system", content: "You are a helpful business analyst." },
         { role: "user", content: prompt },
       ],
-      // temperature: 0.4,
     });
 
     const answer =
