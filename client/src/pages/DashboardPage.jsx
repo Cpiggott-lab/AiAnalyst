@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import projectsService from "../services/projectsService";
+import { SpinnerInfinity } from "spinners-react";
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState([]);
@@ -45,8 +46,18 @@ export default function DashboardPage() {
     setFilteredProjects(filtered);
   };
 
+  // ✅ Loading spinner section
   if (loading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <SpinnerInfinity
+          size={90}
+          thickness={100}
+          speed={100}
+          color="#4F46E5"
+        />
+      </div>
+    );
   }
 
   if (error) {

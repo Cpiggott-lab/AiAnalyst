@@ -2,10 +2,21 @@ import BarChartComponent from "./charts/BarChartComponent";
 import PieChartComponent from "./charts/PieChartComponent";
 import LineChartComponent from "./charts/LineChartComponent";
 import HistogramComponent from "./charts/HistogramComponent";
+import { SpinnerInfinity } from "spinners-react";
 
 export default function ChartGallery({ charts, loading }) {
   if (loading) {
-    return <div className="text-center">Loading charts...</div>;
+    return (
+      <div className="flex flex-col justify-center items-center h-64 col-span-2 space-y-4">
+        <p className="text-sm text-gray-500 font-medium">Charts Loading...</p>
+        <SpinnerInfinity
+          size={80}
+          thickness={100}
+          speed={100}
+          color="#4F46E5"
+        />
+      </div>
+    );
   }
 
   if (!charts || charts.length === 0) {

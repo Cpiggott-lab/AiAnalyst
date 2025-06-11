@@ -2,13 +2,10 @@ const fs = require("fs");
 const path = require("path");
 const Papa = require("papaparse");
 const Project = require("../models/Project");
+const { generateSummary } = require("./AiSummaryPrompt");
 
 exports.uploadHandler = async (req, res) => {
   try {
-    // console.log("req.file:", req.file);
-    // console.log("req.body:", req.body);
-    // console.log("req.user:", req.user);
-
     const filePath = req.file.path;
     const file = fs.readFileSync(filePath, "utf8");
 
@@ -31,6 +28,10 @@ exports.uploadHandler = async (req, res) => {
     });
 
     fs.unlinkSync(filePath);
+
+    // Trigger AI-based summary generation
+    await generateSummary({ projectId: project._id, userId: req.user.id }); // Pass project ID and user ID directly
+
     res.json(project);
   } catch (err) {
     console.error("Upload error:", err);

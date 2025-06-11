@@ -8,9 +8,19 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 // Load global middleware first
+const allowedOrigins = [
+  "http://localhost:4173",
+  "https://aianalyst.netlify.app",
+];
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true, // must be true to allow cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -22,11 +32,9 @@ app.use(cookieParser());
 // Routes
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/project");
-// const teamRoutes = require("./routes/teamRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
-// app.use("/api/team", teamRoutes);
 
 // Root route
 app.get("/", (req, res) => {

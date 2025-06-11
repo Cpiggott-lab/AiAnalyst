@@ -5,13 +5,13 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-exports.generateSummary = async (req, res) => {
+exports.generateSummary = async ({ projectId, userId }) => {
   try {
-    const project = await Project.findById(req.params.id);
-    if (!project) return res.status(404).json({ error: "Project not found" });
+    const project = await Project.findById(projectId);
+    if (!project) throw new Error("Project not found");
 
-    if (project.userId.toString() !== req.user.id) {
-      return res.status(403).json({ error: "Unauthorized access" });
+    if (project.userId.toString() !== userId) {
+      throw new Error("Unauthorized access");
     }
 
     const prompt = `
@@ -33,13 +33,11 @@ ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
     `;
 
     const response = await openai.chat.completions.create({
-      // model: "gpt-4-1106-preview",
       model: "o4-mini",
       messages: [
         { role: "system", content: "You are a helpful business analyst." },
         { role: "user", content: prompt },
       ],
-      // temperature: 0.4,
     });
 
     const summary =
@@ -47,10 +45,10 @@ ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
     project.summary = summary;
     await project.save();
 
-    res.json({ summary });
+    return summary;
   } catch (err) {
     console.error("Summary generation error:", err);
-    res.status(500).json({ error: "Failed to generate summary" });
+    throw err; // Rethrow the error to handle it in the calling function
   }
 };
 
