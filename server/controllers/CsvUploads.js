@@ -1,8 +1,8 @@
 const fs = require("fs");
-const path = require("path");
 const Papa = require("papaparse");
 const Project = require("../models/Project");
 const { generateSummary } = require("./AiSummaryPrompt");
+const { generateChartDataUniversal } = require("./AiChartDataPrompt");
 
 exports.uploadHandler = async (req, res) => {
   try {
@@ -20,6 +20,7 @@ exports.uploadHandler = async (req, res) => {
 
     const project = await Project.create({
       name: req.body.name || "Untitled Project",
+      prompt: req.body.prompt || "", // Ensure prompt is correctly accessed
       userId: req.user.id,
       rawData: parsed.data,
       cleanedData: cleaned,
@@ -30,7 +31,17 @@ exports.uploadHandler = async (req, res) => {
     fs.unlinkSync(filePath);
 
     // Trigger AI-based summary generation
-    await generateSummary({ projectId: project._id, userId: req.user.id }); // Pass project ID and user ID directly
+    await generateSummary({
+      projectId: project._id,
+      userId: req.user.id,
+      prompt: req.body.prompt, // Pass prompt correctly
+    });
+
+    // // Generate chart data
+    // await generateChartDataUniversal({
+    //   projectId: project._id,
+    //   userId: req.user.id,
+    // });
 
     res.json(project);
   } catch (err) {
@@ -65,6 +76,7 @@ exports.getProjectById = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch project" });
   }
 };
+
 exports.deleteProject = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
@@ -84,6 +96,7 @@ exports.deleteProject = async (req, res) => {
     res.status(500).json({ error: "Failed to delete project" });
   }
 };
+
 exports.updateNote = async (req, res) => {
   try {
     const { note } = req.body;

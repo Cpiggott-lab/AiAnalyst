@@ -3,7 +3,8 @@ import axios from "axios";
 class ProjectsService {
   constructor() {
     this.api = axios.create({
-      baseURL: "http://localhost:5001/api",
+      baseURL: "https://server-aianalyst.up.railway.app/api",
+      // baseURL: "http://localhost:5001/api",
       withCredentials: true,
     });
 
@@ -32,12 +33,17 @@ class ProjectsService {
     return res.data.summary;
   }
 
-  async upload(file, name = "Uploaded Project") {
+  async upload(file, name = "Uploaded Project", prompt = "") {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("name", name);
+    formData.append("prompt", prompt); // Include prompt if provided
 
-    const res = await this.api.post("/projects/upload", formData);
+    const res = await this.api.post("/projects/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
   }
 

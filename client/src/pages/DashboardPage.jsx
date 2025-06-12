@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import projectsService from "../services/projectsService";
 import { SpinnerInfinity } from "spinners-react";
+import FollowUpChat from "../components/FollowUpChat";
+import NotesSection from "../components/NotesSection";
+import ChartGallery from "../components/ChartGallery";
+import SummaryCard from "../components/SummaryCard";
+import CleanedDataPreview from "../components/CleanedDataPreview";
+import DownloadButton from "../components/DownloadButton";
+import { SidebarProvider } from "../components/ui/sidebar";
 
-export default function DashboardPage() {
+export default function DashboardWithPreviewPage() {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const { projectId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,36 +26,80 @@ export default function DashboardPage() {
         const data = await projectsService.getAllProjects();
         setProjects(data);
         setFilteredProjects(data);
+
+        if (projectId) {
+          const match = data.find((p) => p._id === projectId);
+          if (match) setSelectedProject(match);
+        }
       } catch (err) {
-        setError(err.message || "Error loading projects");
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
     fetchProjects();
-  }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      await projectsService.deleteProject(id);
-      setProjects((prev) => prev.filter((p) => p._id !== id));
-      setFilteredProjects((prev) => prev.filter((p) => p._id !== id));
-    } catch (err) {
-      console.error("Failed to delete project:", err);
-      alert("Could not delete project.");
-    }
-  };
+  }, [projectId]);
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-    const filtered = projects.filter((project) =>
-      project.name.toLowerCase().includes(term)
+    setFilteredProjects(
+      projects.filter((p) => p.name.toLowerCase().includes(term))
     );
-    setFilteredProjects(filtered);
   };
 
-  // ✅ Loading spinner section
+  const handleDelete = async (id) => {
+    try {
+      await projectsService.deleteProject(id);
+      const updated = projects.filter((p) => p._id !== id);
+      setProjects(updated);
+      setFilteredProjects(updated);
+      if (selectedProject && selectedProject._id === id) {
+        setSelectedProject(null);
+      }
+    } catch (err) {
+      alert("Could not delete project.");
+    }
+  };
+
+  useEffect(() => {
+    if (!selectedProject) return;
+
+    if (!selectedProject.summary) {
+      projectsService
+        .generateSummary(selectedProject._id)
+        .then((summary) => {
+          setSelectedProject((prev) => ({
+            ...prev,
+            summary: summary || "No summary generated.",
+          }));
+        })
+        .catch(() => {
+          setSelectedProject((prev) => ({
+            ...prev,
+            summary: "Failed to load summary.",
+          }));
+        });
+    }
+
+    if (
+      !selectedProject.chartData?.recommendedCharts ||
+      selectedProject.chartData.recommendedCharts.length === 0
+    ) {
+      projectsService
+        .generateChartData(selectedProject._id)
+        .then((res) => {
+          setSelectedProject((prev) => ({
+            ...prev,
+            chartData: res.chartData,
+          }));
+        })
+        .catch(() => {
+          setSelectedProject((prev) => ({ ...prev, chartData: null }));
+        });
+    }
+  }, [selectedProject]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -55,6 +108,7 @@ export default function DashboardPage() {
           thickness={100}
           speed={100}
           color="#4F46E5"
+          secondaryColor="#D1D5DB"
         />
       </div>
     );
@@ -65,80 +119,105 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col items-center py-10 text-center">
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-[80vw]">
-        <div className="max-w-4xl mx-auto px-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 className="text-3xl font-bold text-center md:text-left">
-            Projects
-          </h1>
+    <SidebarProvider>
+      <div className="flex h-screen">
+        <div className="w-[20vw] bg-white text-black border-r flex-shrink-0 flex flex-col">
+          <div className="p-4 border-b">
+            <button
+              onClick={() => navigate("/upload")}
+              className="w-full mb-4 px-4 py-2 text-sm font-medium text-white bg-black rounded hover:bg-gray-700 transition-colors disabled:opacity-50"
+            >
+              + New Project
+            </button>
 
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleSearch}
-            placeholder="Search projects..."
-            className="w-full md:w-1/2 px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-          />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleSearch}
+              placeholder="Search projects..."
+              className="w-full px-3 py-2 rounded border focus:outline-none"
+            />
+          </div>
 
-          <button
-            onClick={() => navigate("/upload")}
-            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-600 cursor-pointer"
-          >
-            + New
-          </button>
-        </div>
-      </div>
-
-      {filteredProjects.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-6 w-[80vw]">
-          <div className="max-w-4xl mx-auto px-4 text-gray-600">
-            No projects match your search.
+          <div className="p-4 overflow-y-auto flex-1">
+            {filteredProjects.map((project) => (
+              <div
+                key={project._id}
+                className={`p-2 cursor-pointer rounded hover:bg-gray-200 ${
+                  selectedProject?._id === project._id
+                    ? "bg-gray-200 font-semibold"
+                    : ""
+                }`}
+                onClick={() => setSelectedProject(project)}
+              >
+                {project.name}
+              </div>
+            ))}
           </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-[80vw]">
-          {filteredProjects.map((project) => (
-            <div
-              key={project._id}
-              className="bg-white p-6 rounded-lg shadow-md border hover:shadow-lg transition"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div className="text-left">
-                  <h2 className="text-xl font-semibold">{project.name}</h2>
-                  <p className="text-gray-600 text-sm">
-                    Created: {new Date(project.createdAt).toLocaleDateString()}
-                  </p>
+
+        <main className="w-[80vw] overflow-y-auto p-6 bg-gray-50 text-black">
+          {!selectedProject ? (
+            <div className="text-black pt-8 rounded-xl text-center h-full flex items-start justify-center">
+              Select a project from the sidebar.
+            </div>
+          ) : (
+            <div className="w-full max-w-[1100px] mx-auto px-4">
+              <h1 className="flex justify-center text-2xl font-bold mb-2">
+                {selectedProject.name}
+              </h1>
+              <p className="flex justify-center text-sm mb-4">
+                Date: {new Date(selectedProject.createdAt).toLocaleDateString()}
+              </p>
+
+              <NotesSection
+                key={selectedProject._id}
+                projectId={selectedProject._id}
+                initialNotes={selectedProject.notes || []}
+              />
+
+              <SummaryCard
+                summary={selectedProject.summary}
+                loading={!selectedProject.summary}
+              />
+
+              {selectedProject.summary && (
+                <div className="mb-8">
+                  <FollowUpChat
+                    projectId={selectedProject._id}
+                    summary={selectedProject.summary}
+                  />
                 </div>
-                <button
-                  onClick={() => handleDelete(project._id)}
-                  className="text-red-500 text-sm hover:underline"
-                >
-                  Delete
-                </button>
-              </div>
+              )}
 
-              <div className="bg-gray-900 text-white text-xs rounded p-4 overflow-auto max-h-40 whitespace-pre-wrap mb-4 text-left">
-                {project.cleanedData?.length > 0 ? (
-                  <pre>
-                    {JSON.stringify(project.cleanedData.slice(0, 3), null, 2)}
-                  </pre>
-                ) : (
-                  <p>No cleaned data available.</p>
-                )}
-              </div>
+              <ChartGallery
+                charts={selectedProject.chartData?.recommendedCharts}
+                loading={!selectedProject.chartData}
+              />
 
-              <div className="text-right">
-                <Link
-                  to={`/projects/${project._id}`}
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  View →
-                </Link>
+              <CleanedDataPreview cleanedData={selectedProject.cleanedData} />
+
+              <div className="flex flex-row gap-4 mt-8 justify-between">
+                <DownloadButton
+                  data={selectedProject.cleanedData}
+                  filename={`${selectedProject.name || "cleaned_data"}.json`}
+                />
+
+                <div>
+                  <div className="bg-red-500 text-red-800 px-4 py-2 rounded-l mb-4 hover:bg-red-700">
+                    <button
+                      onClick={() => handleDelete(selectedProject._id)}
+                      className="text-white text-sm"
+                    >
+                      Delete Project
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
+          )}
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }
