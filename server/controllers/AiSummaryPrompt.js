@@ -5,7 +5,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-exports.generateSummary = async ({ projectId, userId }) => {
+exports.generateSummary = async ({ projectId, userId, prompt }) => {
   try {
     const project = await Project.findById(projectId);
     if (!project) throw new Error("Project not found");
@@ -14,7 +14,26 @@ exports.generateSummary = async ({ projectId, userId }) => {
       throw new Error("Unauthorized access");
     }
 
-    const prompt = `
+    // Create dataset preview
+    const datasetPreview = project.cleanedData.slice(0, 50);
+    const datasetString = JSON.stringify(datasetPreview, null, 2);
+
+    // Decide prompt content
+    const userPrompt = prompt?.trim();
+    const finalPrompt = userPrompt
+      ? `
+You are an AI business analyst for a startup founder.
+The user uploaded a dataset (preview below) and asked the following:
+
+"${userPrompt}"
+
+Please provide a detailed executive summary with specific patterns, insights, and data-driven suggestions. 
+If assumptions are needed, clearly state them. Use clear bullet points or short paragraphs.
+
+Dataset preview:
+${datasetString}
+      `
+      : `
 You are a business data analyst. Analyze the following lead data and return an executive summary that includes:
 
 1. A high-level description of the data (e.g., number of records, common fields).
@@ -28,27 +47,30 @@ You are a business data analyst. Analyze the following lead data and return an e
 Present your findings in clear bullet points, emphasizing data-driven insights that can be used to guide sales strategy or dashboard design.
 
 Here is the lead data in JSON:
-
-${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
-    `;
+${datasetString}
+      `;
 
     const response = await openai.chat.completions.create({
-      model: "o4-mini",
+      model: "o4-mini", // You can change to "gpt-4" if desired
       messages: [
         { role: "system", content: "You are a helpful business analyst." },
-        { role: "user", content: prompt },
+        { role: "user", content: finalPrompt },
       ],
     });
 
     const summary =
       response.choices[0]?.message?.content || "No summary generated.";
     project.summary = summary;
+
+    // Optionally save the prompt used
+    if (userPrompt) project.prompt = userPrompt;
+
     await project.save();
 
     return summary;
   } catch (err) {
     console.error("Summary generation error:", err);
-    throw err; // Rethrow the error to handle it in the calling function
+    throw err;
   }
 };
 

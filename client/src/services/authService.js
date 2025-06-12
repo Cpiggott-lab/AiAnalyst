@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API = "http://localhost:5001/api/auth";
+const API = "https://server-aianalyst.up.railway.app/api";
+// const API = "http://localhost:5001/api/auth";
 
 class AuthService {
   async register(email, password) {

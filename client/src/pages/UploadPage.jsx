@@ -6,6 +6,7 @@ import { SpinnerInfinity } from "spinners-react";
 export default function UploadPage() {
   const [file, setFile] = useState(null);
   const [projectName, setProjectName] = useState("");
+  const [prompt, setPrompt] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +23,8 @@ export default function UploadPage() {
     try {
       const project = await projectsService.upload(
         file,
-        projectName || "Untitled Project"
+        projectName || "Untitled Project",
+        prompt || "" // Optional prompt
       );
       navigate(`/projects/${project._id}`);
     } catch (err) {
@@ -84,6 +86,14 @@ export default function UploadPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-md text-black"
             />
 
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="What would you like AiAnalyst to analyze or summarize? (Optional, it will return a standard Executive Summary if left blank)"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md text-black"
+              rows={4}
+            />
+
             <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -115,7 +125,6 @@ export default function UploadPage() {
                 id="csv-upload"
               />
             </div>
-
             {file && (
               <button
                 type="submit"

@@ -46,7 +46,7 @@ export default function DashboardPage() {
     setFilteredProjects(filtered);
   };
 
-  // ✅ Loading spinner section
+  // Loading spinner section
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -55,6 +55,7 @@ export default function DashboardPage() {
           thickness={100}
           speed={100}
           color="#4F46E5"
+          secondaryColor="#D1D5DB"
         />
       </div>
     );
@@ -65,10 +66,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col items-center py-10 text-center">
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8 w-[80vw]">
+    <div className="bg-black flex flex-col items-center py-10 text-center h-full">
+      <div className="bg-black rounded-lg shadow-md p-6 mb-1 w-[80vw]">
         <div className="max-w-4xl mx-auto px-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 className="text-3xl font-bold text-center md:text-left">
+          <h1 className="text-white text-3xl font-bold text-center md:text-left">
             Projects
           </h1>
 
@@ -77,12 +78,12 @@ export default function DashboardPage() {
             value={searchTerm}
             onChange={handleSearch}
             placeholder="Search projects..."
-            className="w-full md:w-1/2 px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+            className="bg-white w-full md:w-1/2 px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
           />
 
           <button
             onClick={() => navigate("/upload")}
-            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-600 cursor-pointer"
+            className="bg-white text-black px-4 py-2 rounded hover:bg-gray-600 cursor-pointer"
           >
             + New
           </button>
@@ -117,7 +118,7 @@ export default function DashboardPage() {
                 </button>
               </div>
 
-              <div className="bg-gray-900 text-white text-xs rounded p-4 overflow-auto max-h-40 whitespace-pre-wrap mb-4 text-left">
+              <div className="bg-black text-white text-xs rounded p-4 overflow-auto max-h-40 whitespace-pre-wrap mb-4 text-left">
                 {project.cleanedData?.length > 0 ? (
                   <pre>
                     {JSON.stringify(project.cleanedData.slice(0, 3), null, 2)}

@@ -10,7 +10,7 @@ const cors = require("cors");
 // Load global middleware first
 const allowedOrigins = [
   process.env.CLIENT_URL,
-  "http://localhost:4173",
+  "http://localhost:5173",
   "https://aianalyst.netlify.app",
 ];
 app.use(

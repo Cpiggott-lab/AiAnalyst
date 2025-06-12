@@ -45,7 +45,7 @@ export default function FollowUpChat({ projectId, summary }) {
       </form>
 
       {answer && (
-        <div className="mt-4 bg-white p-4 border rounded shadow-sm">
+        <div className="mt-4 bg-black p-4 border rounded shadow-sm">
           <h4 className="font-semibold mb-1">AI Response:</h4>
           <p className="whitespace-pre-wrap">{answer}</p>
         </div>
