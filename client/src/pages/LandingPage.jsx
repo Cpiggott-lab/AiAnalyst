@@ -1,8 +1,6 @@
 import BarChart from "../assets/Bar-Chart.png";
 import PieChart from "../assets/Pie-Chart.png";
 import LineChart from "../assets/Line-Chart.png";
-import AiAnalystImage from "../assets/AiAnalystBanner.png";
-import { Link } from "react-router-dom";
 import Banner from "../components/Banner";
 
 export default function LandingPage() {

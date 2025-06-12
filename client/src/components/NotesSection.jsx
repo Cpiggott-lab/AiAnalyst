@@ -27,7 +27,6 @@ export default function NotesSection({ projectId, initialNotes = [] }) {
         <h2 className="flex justify-center text-xl font-semibold mb-4 text-gray-800">
           Project Notes
         </h2>
-
         <textarea
           className="w-full border border-gray-300 rounded-md p-3 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={note}
@@ -39,12 +38,13 @@ export default function NotesSection({ projectId, initialNotes = [] }) {
           onClick={saveNote}
           disabled={noteSaving}
           className={`mt-4 w-full px-4 py-2 rounded text-white font-semibold ${
-            noteSaving ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+            noteSaving
+              ? "bg-black"
+              : "bg-black hover:bg-gray-700 transition-colors"
           }`}
         >
           {noteSaving ? "Saving..." : "Save Note"}
         </button>
-
         {notes.length > 0 && (
           <div className="mt-6">
             <h3 className="text-md font-semibold text-gray-700 mb-2">

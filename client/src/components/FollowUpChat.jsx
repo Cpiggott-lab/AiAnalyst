@@ -37,7 +37,7 @@ export default function FollowUpChat({ projectId, summary }) {
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors disabled:opacity-50"
           disabled={loading}
         >
           {loading ? "Thinking..." : "Ask"}
@@ -45,7 +45,7 @@ export default function FollowUpChat({ projectId, summary }) {
       </form>
 
       {answer && (
-        <div className="mt-4 bg-black p-4 border rounded shadow-sm">
+        <div className="mt-4 bg-white p-4 border rounded shadow-sm">
           <h4 className="font-semibold mb-1">AI Response:</h4>
           <p className="whitespace-pre-wrap">{answer}</p>
         </div>

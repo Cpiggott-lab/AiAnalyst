@@ -26,7 +26,7 @@ export default function UploadPage() {
         projectName || "Untitled Project",
         prompt || "" // Optional prompt
       );
-      navigate(`/projects/${project._id}`);
+      navigate(`/dashboard/${project._id}`);
     } catch (err) {
       console.error("Upload failed", err);
       alert("Upload failed");

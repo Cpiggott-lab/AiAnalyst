@@ -10,19 +10,16 @@ exports.generateChartDataUniversal = async (req, res) => {
     if (project.userId.toString() !== req.user.id)
       return res.status(403).json({ error: "Unauthorized access" });
 
-    // If charts already exist, just return them
+    // If charts already exist, return them
     if (project.chartData && Object.keys(project.chartData).length > 0) {
       return res.json({ chartData: project.chartData });
     }
 
-    // Build the OpenAI prompt
+    // Build prompt with strong constraints
     const chartPrompt = `
-You are a data analyst. The user will upload any cleaned CSV or JSON table (with arbitrary columns, e.g. sales, leads, survey results, etc). 
+You are a data analyst. The user will upload a cleaned JSON or CSV table (e.g. sales, leads, countries, product surveys, etc).
 
-Analyze the dataset below, then for each chart type, output the best-suited fields as arrays or objects, with these requirements:
-- Only use fields present in the data
-- If a chart is not relevant (e.g. no time field for a line chart), skip it
-- Return only raw JSON. No markdown, no explanation, no preamble. Use this structure:
+Analyze the dataset below and return multiple appropriate chart definitions using this format:
 
 {
   "recommendedCharts": [
@@ -30,38 +27,42 @@ Analyze the dataset below, then for each chart type, output the best-suited fiel
       "type": "bar",
       "title": "Top categories by count",
       "field": "<FIELD_NAME>",
-      "data": [ {"label": "<Value>", "count": <N> }, ... ]
+      "data": [ { "label": "<Value>", "count": <N> }, ... ]
     },
     {
       "type": "pie",
       "title": "Share of <FIELD_NAME>",
       "field": "<FIELD_NAME>",
-      "data": [ {"label": "<Value>", "count": <N> }, ... ]
+      "data": [ { "label": "<Value>", "count": <N> }, ... ]
     },
     {
       "type": "line",
       "title": "Trends over time",
       "xField": "<DATE_FIELD>",
       "yField": "<NUMERIC_FIELD>",
-      "data": [ {"date": "<Date>", "value": <N> }, ... ]
+      "data": [ { "date": "<Date>", "value": <N> }, ... ]
     },
     {
       "type": "histogram",
       "title": "Distribution of <NUMERIC_FIELD>",
       "field": "<NUMERIC_FIELD>",
-      "data": [ {"bin": "<Range>", "count": <N> }, ... ]
+      "data": [ { "bin": "<Range>", "count": <N> }, ... ]
     }
   ]
 }
 
-If a field is missing for a chart type, omit that chart. 
-Base your choices on the most relevant or populous columns for the dataset.
+Rules:
+- Only include fields from the data.
+- Omit any chart if required fields (e.g. dates) are missing.
+- For bar and pie charts, limit data to the top 10 most frequent values.
+- Do NOT include markdown, commentary, or explanation—return only pure JSON.
+- Keep chart titles clear and field-based.
 
 Here is the cleaned data in JSON:
 ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
 `;
 
-    // Send the prompt to OpenAI
+    // Send request to OpenAI
     const response = await openai.chat.completions.create({
       model: "o4-mini",
       messages: [
@@ -70,26 +71,22 @@ ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
       ],
     });
 
-    // Get the response text
+    // Parse and sanitize the response
     let openAIContent = response.choices[0]?.message?.content || "";
     openAIContent = openAIContent.trim();
 
-    // Remove code block markers if present
     if (openAIContent.startsWith("```")) {
       openAIContent = openAIContent
         .replace(/^```[a-z]*\s*/i, "")
         .replace(/```$/, "");
     }
 
-    // Remove comments so JSON.parse won't break
-    openAIContent = openAIContent.replace(/^\s*\/\/.*$/gm, "");
-    openAIContent = openAIContent.replace(/,?\s*\/\/.*$/gm, "");
+    openAIContent = openAIContent
+      .replace(/^\s*\/\/.*$/gm, "")
+      .replace(/,?\s*\/\/.*$/gm, "")
+      .replace(/\.\.\./g, "")
+      .replace(/,\s*([\]}])/g, "$1");
 
-    //  Strip ellipses and trailing commas
-    openAIContent = openAIContent.replace(/\.\.\./g, "");
-    openAIContent = openAIContent.replace(/,\s*([\]}])/g, "$1");
-
-    // Now parse JSON
     let chartData = {};
     try {
       chartData = JSON.parse(openAIContent);
@@ -101,7 +98,21 @@ ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
         .json({ error: "Failed to parse chart data JSON." });
     }
 
-    // Save chart data and send it back
+    // Enforce top 10 for pie/bar charts to reduce clutter
+    if (Array.isArray(chartData.recommendedCharts)) {
+      chartData.recommendedCharts = chartData.recommendedCharts.map((chart) => {
+        if (
+          ["bar", "pie"].includes(chart.type) &&
+          Array.isArray(chart.data) &&
+          chart.data.length > 10
+        ) {
+          return { ...chart, data: chart.data.slice(0, 10) };
+        }
+        return chart;
+      });
+    }
+
+    // Save and return chart data
     project.chartData = chartData;
     await project.save();
     res.json({ chartData });

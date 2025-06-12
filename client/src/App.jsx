@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import UploadPage from "./pages/UploadPage";
-import ProjectViewPage from "./pages/ProjectViewPage";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import AboutPage from "./pages/AboutPage";
@@ -22,9 +21,9 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/projects/:id" element={<ProjectViewPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/dashboard/:projectId" element={<DashboardPage />} />
           </Routes>
         </div>
         <Footer />

@@ -2,7 +2,7 @@
 export default function ContactPage() {
   return (
     <div className="flex flex-col items-center py-12 text-center">
-      <div className="bg-white rounded-lg shadow-md p-6 w-[80vw]">
+      <div className="bg-white rounded-lg shadow-md p-6 w-[50vw]">
         <div className="max-w-2xl mx-auto px-4">
           <h1 className="text-3xl font-bold mb-6">Contact Us</h1>
 
@@ -74,13 +74,14 @@ export default function ContactPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-md text-black"
               ></textarea>
             </div>
-
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-lg font-semibold"
-            >
-              Send Message
-            </button>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="bg-black hover:bg-gray-700 text-white px-6 py-3 rounded-md text-lg font-semibold"
+              >
+                Send Message
+              </button>
+            </div>
           </form>
         </div>
       </div>

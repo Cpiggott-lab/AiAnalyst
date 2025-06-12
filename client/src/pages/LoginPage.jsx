@@ -22,7 +22,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-16 p-6 border rounded shadow">
+    <div className="bg-white max-w-md mx-auto mt-16 p-6 border rounded-xl shadow">
       <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
 
       {error && (

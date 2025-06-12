@@ -2,6 +2,7 @@ const fs = require("fs");
 const Papa = require("papaparse");
 const Project = require("../models/Project");
 const { generateSummary } = require("./AiSummaryPrompt");
+const { generateChartDataUniversal } = require("./AiChartDataPrompt");
 
 exports.uploadHandler = async (req, res) => {
   try {
@@ -35,6 +36,12 @@ exports.uploadHandler = async (req, res) => {
       userId: req.user.id,
       prompt: req.body.prompt, // Pass prompt correctly
     });
+
+    // // Generate chart data
+    // await generateChartDataUniversal({
+    //   projectId: project._id,
+    //   userId: req.user.id,
+    // });
 
     res.json(project);
   } catch (err) {
