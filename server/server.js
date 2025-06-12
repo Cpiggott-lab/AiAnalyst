@@ -9,24 +9,29 @@ const cors = require("cors");
 
 // Load global middleware first
 const allowedOrigins = [
-  process.env.CLIENT_URL,
+  process.env.CLIENT_URL || "https://aianalyst.netlify.app",
   "http://localhost:5173",
   "https://aianalyst.netlify.app",
+  "http://localhost:4174",
 ];
+
 app.use(
   cors({
     origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error("Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true, // must be true to allow cookies
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 

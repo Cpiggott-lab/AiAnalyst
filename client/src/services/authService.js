@@ -1,34 +1,63 @@
 import axios from "axios";
 
-const API = "https://server-aianalyst.up.railway.app/api";
-// const API = "http://localhost:5001/api/auth";
+// Use environment variable or fallback to localhost
+const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
 
 class AuthService {
   async register(email, password) {
-    const response = await axios.post(`${API}/register`, { email, password });
-    return response.data;
+    try {
+      const res = await axios.post(
+        `${API}/register`,
+        { email, password },
+        {
+          withCredentials: true,
+        }
+      );
+      return res.data;
+    } catch (err) {
+      console.error("Register error:", err.response?.data || err.message);
+      throw err;
+    }
   }
 
   async login(email, password) {
-    const response = await axios.post(
-      `${API}/login`,
-      { email, password },
-      { withCredentials: true }
-    );
-    return response.data;
+    try {
+      const res = await axios.post(
+        `${API}/login`,
+        { email, password },
+        { withCredentials: true }
+      );
+      return res.data;
+    } catch (err) {
+      console.error("Login error:", err.response?.data || err.message);
+      throw err;
+    }
   }
 
   async logout() {
-    await axios.post(`${API}/logout`, null, {
-      withCredentials: true,
-    });
+    try {
+      await axios.post(`${API}/logout`, null, {
+        withCredentials: true,
+      });
+    } catch (err) {
+      console.error("Logout error:", err.response?.data || err.message);
+      throw err;
+    }
   }
 
   async getCurrentUser() {
-    const response = await axios.get(`${API}/me`, {
-      withCredentials: true,
-    });
-    return response.data;
+    try {
+      const res = await axios.get(`${API}/me`, {
+        withCredentials: true,
+      });
+      return res.data;
+    } catch (err) {
+      console.error(
+        "Get current user error:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
   }
 }
 

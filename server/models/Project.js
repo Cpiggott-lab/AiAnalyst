@@ -16,5 +16,6 @@ const projectSchema = new mongoose.Schema({
     },
   ],
 });
+projectSchema.index({ createdAt: -1 }); // Index for sorting by creation date
 
 module.exports = mongoose.model("Project", projectSchema);
