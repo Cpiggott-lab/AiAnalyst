@@ -3,14 +3,13 @@ import axios from "axios";
 class ProjectsService {
   constructor() {
     this.api = axios.create({
-      baseURL: "https://server-aianalyst.up.railway.app/api",
-      // baseURL: "http://localhost:5001/api",
+      baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api",
       withCredentials: true,
     });
 
     this.api.interceptors.request.use((config) => {
       const token = localStorage.getItem("token");
-      if (token) {
+      if (token && token !== "undefined") {
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
@@ -18,55 +17,113 @@ class ProjectsService {
   }
 
   async getAllProjects() {
-    const res = await this.api.get("/projects");
-    return res.data;
+    try {
+      const res = await this.api.get("/projects");
+      return res.data;
+    } catch (err) {
+      console.error(
+        "Error fetching projects:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
   }
 
   async getProjectById(id) {
-    const res = await this.api.get(`/projects/${id}`);
-    return res.data;
+    try {
+      const res = await this.api.get(`/projects/${id}`);
+      return res.data;
+    } catch (err) {
+      console.error(
+        "Error fetching project:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
   }
 
   async generateSummary(id) {
-    const res = await this.api.post(`/projects/${id}/summary`);
-    console.log("generateSummary response:", res.data); //debugging
-    return res.data.summary;
+    try {
+      const res = await this.api.post(`/projects/${id}/summary`);
+      console.log("generateSummary response:", res.data);
+      return res.data.summary;
+    } catch (err) {
+      console.error(
+        "Error generating summary:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
   }
 
   async upload(file, name = "Uploaded Project", prompt = "") {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("name", name);
-    formData.append("prompt", prompt); // Include prompt if provided
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("name", name);
+      formData.append("prompt", prompt);
 
-    const res = await this.api.post("/projects/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return res.data;
+      const res = await this.api.post("/projects/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    } catch (err) {
+      console.error("Error uploading file:", err.response?.data || err.message);
+      throw err;
+    }
   }
 
   async askQuestion(projectId, question) {
-    const res = await this.api.post(`/projects/${projectId}/question`, {
-      question,
-    });
-    return res.data;
+    try {
+      const res = await this.api.post(`/projects/${projectId}/question`, {
+        question,
+      });
+      return res.data;
+    } catch (err) {
+      console.error(
+        "Error asking question:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
   }
 
   async deleteProject(id) {
-    const res = await this.api.delete(`/projects/${id}`);
-    return res.data;
+    try {
+      const res = await this.api.delete(`/projects/${id}`);
+      return res.data;
+    } catch (err) {
+      console.error(
+        "Error deleting project:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
   }
 
   async generateChartData(id) {
-    const res = await this.api.get(`/projects/${id}/chartdata-universal`);
-    return res.data;
+    try {
+      const res = await this.api.get(`/projects/${id}/chartdata-universal`);
+      return res.data;
+    } catch (err) {
+      console.error(
+        "Error generating chart data:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
   }
 
   async updateNote(id, note) {
-    const res = await this.api.put(`/projects/${id}/note`, { note });
-    return res.data;
+    try {
+      const res = await this.api.put(`/projects/${id}/note`, { note });
+      return res.data;
+    } catch (err) {
+      console.error("Error updating note:", err.response?.data || err.message);
+      throw err;
+    }
   }
 }
 

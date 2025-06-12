@@ -49,13 +49,36 @@ exports.uploadHandler = async (req, res) => {
     res.status(500).json({ error: "Failed to upload project" });
   }
 };
+const mongoose = require("mongoose");
 
 exports.getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ userId: req.user.id }).sort({
-      createdAt: -1,
+    const page = Number(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    if (!req.user || !req.user.id) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: User not found in request" });
+    }
+
+    console.log("Fetching projects for user:", req.user.id, "Page:", page);
+
+    const projects = await Project.find({ userId: req.user.id })
+      .select("name prompt summary notes createdAt")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Project.countDocuments({ userId: req.user.id });
+
+    res.json({
+      projects,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
     });
-    res.json(projects);
   } catch (err) {
     console.error("Error fetching projects:", err);
     res.status(500).json({ error: "Failed to fetch projects" });
