@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -41,6 +42,22 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const register = async (email, password) => {
+    try {
+      const data = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
+        { email, password },
+        {
+          withCredentials: true,
+        }
+      );
+      setUser(data.data.user);
+    } catch (err) {
+      console.error("Register error:", err.response?.data || err.message);
+      throw err;
+    }
+  };
+
   const login = async ({ email, password }) => {
     const res = await fetch(
       import.meta.env.VITE_API_BASE_URL + "/api/auth/login",
@@ -58,10 +75,10 @@ export function AuthProvider({ children }) {
     if (!data.user || !data.user._id || !data.token) {
       throw new Error("Invalid login response");
     }
-
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
     setUser(data.user);
+    await verify();
   };
 
   const logout = () => {
@@ -70,8 +87,30 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const verify = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/me`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.data.id) setUser(res.data);
+      else {
+        console.warn("User verification failed - clearing auth state.");
+        setUser(null);
+      }
+    } catch (err) {
+      console.error(
+        "Get current user error:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, register, login, verify, logout }}>
       {children}
     </AuthContext.Provider>
   );

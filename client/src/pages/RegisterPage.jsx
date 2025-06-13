@@ -1,29 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import authService from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { register, user } = useAuth();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await authService.register(email, password);
-      const loginResponse = await authService.login(email, password);
-
-      // Redirect the user after successful login
-      if (loginResponse.token) {
-        navigate("/welcome");
-      } else {
-        alert("Login failed after registration.");
-      }
+      await register(email, password);
     } catch (err) {
       console.error("Registration error:", err);
       alert("Registration failed.");
     }
   };
+
+  const id = user?._id;
+  useEffect(() => {
+    if (user && user._id) navigate("/");
+  }, [id]);
+
   //once registered need to keep the user logged in under the new account created just like in the login page
 
   return (
