@@ -19,6 +19,7 @@ class ProjectsService {
   async getAllProjects() {
     try {
       const res = await this.api.get("/api/projects");
+      console.log(res);
       return res.data;
     } catch (err) {
       console.error(

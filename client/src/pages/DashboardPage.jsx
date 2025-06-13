@@ -28,6 +28,8 @@ export default function DashboardWithPreviewPage() {
         setFilteredProjects(data.projects);
         if (projectId) {
           const match = data.projects.find((p) => p._id === projectId);
+          console.log("match", match);
+
           if (match) setSelectedProject(match);
         }
       } catch (err) {
