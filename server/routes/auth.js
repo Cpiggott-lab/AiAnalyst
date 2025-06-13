@@ -12,8 +12,9 @@ router.post("/register", async (req, res) => {
     const { email, password } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = await User.create({ email, passwordHash });
-
-    res.status(201).json({ message: "User created", userId: newUser._id });
+    console.log(newUser);
+    const { passwordHash: _, ...userData } = newUser.toObject();
+    res.status(201).json({ message: "User created", user: userData });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -66,7 +67,7 @@ router.post("/login", async (req, res) => {
 
 // Authenticated user check
 router.get("/me", isAuthenticated, (req, res) => {
-  res.json(req.payload);
+  res.json(req.user);
 });
 
 module.exports = router;

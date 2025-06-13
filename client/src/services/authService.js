@@ -1,7 +1,6 @@
 import axios from "axios";
 
-// Use environment variable or fallback to localhost
-const API = import.meta.env.VITE_API_BASE_URL;
+const API = `${import.meta.env.VITE_API_BASE_URL}/api/auth`;
 
 class AuthService {
   async register(email, password) {
@@ -27,6 +26,13 @@ class AuthService {
         { email, password },
         { withCredentials: true }
       );
+
+      // Store the token in localStorage
+      const { token } = res.data;
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+
       return res.data;
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
@@ -36,6 +42,7 @@ class AuthService {
 
   async logout() {
     try {
+      localStorage.removeItem("token"); // Remove token from localStorage
       await axios.post(`${API}/logout`, null, {
         withCredentials: true,
       });

@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -14,12 +15,16 @@ function LoginPage() {
     setError("");
     try {
       await login({ email, password });
-      navigate("/dashboard");
     } catch (err) {
       console.error("Login failed:", err.message);
       setError("Invalid email or password.");
     }
   };
+
+  const id = user?._id;
+  useEffect(() => {
+    if (user && user._id) navigate("/");
+  }, [id]);
 
   return (
     <div className="bg-white max-w-md mx-auto mt-16 p-6 border rounded-xl shadow">
@@ -55,12 +60,12 @@ function LoginPage() {
       </form>
       <p className="text-sm text-center mt-4">
         Don't have an account?{" "}
-        <a
-          href="/register"
+        <Link
+          to="/register"
           className="text-blue-600 hover:underline font-medium"
         >
           Register here
-        </a>
+        </Link>
       </p>
     </div>
   );

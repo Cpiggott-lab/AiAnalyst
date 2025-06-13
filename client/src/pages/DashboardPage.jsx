@@ -24,14 +24,15 @@ export default function DashboardWithPreviewPage() {
     const fetchProjects = async () => {
       try {
         const data = await projectsService.getAllProjects();
-        setProjects(data);
-        setFilteredProjects(data);
-
+        setProjects(data.projects);
+        setFilteredProjects(data.projects);
         if (projectId) {
-          const match = data.find((p) => p._id === projectId);
+          const match = data.projects.find((p) => p._id === projectId);
           if (match) setSelectedProject(match);
         }
       } catch (err) {
+        console.log("error", err);
+
         setError(err.message);
       } finally {
         setLoading(false);
@@ -140,19 +141,21 @@ export default function DashboardWithPreviewPage() {
           </div>
 
           <div className="p-4 overflow-y-auto flex-1">
-            {filteredProjects.map((project) => (
-              <div
-                key={project._id}
-                className={`p-2 cursor-pointer rounded hover:bg-gray-200 ${
-                  selectedProject?._id === project._id
-                    ? "bg-gray-200 font-semibold"
-                    : ""
-                }`}
-                onClick={() => setSelectedProject(project)}
-              >
-                {project.name}
-              </div>
-            ))}
+            {filteredProjects &&
+              filteredProjects &&
+              filteredProjects.map((project) => (
+                <div
+                  key={project._id}
+                  className={`p-2 cursor-pointer rounded hover:bg-gray-200 ${
+                    selectedProject?._id === project._id
+                      ? "bg-gray-200 font-semibold"
+                      : ""
+                  }`}
+                  onClick={() => setSelectedProject(project)}
+                >
+                  {project.name}
+                </div>
+              ))}
           </div>
         </div>
 

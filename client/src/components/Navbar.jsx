@@ -6,7 +6,6 @@ import moreIcon from "../assets/more.png";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const isLoggedIn = !!localStorage.getItem("token");
 
   const handleLogout = async () => {
     await logout();
@@ -78,7 +77,7 @@ export default function Navbar() {
           </Popover>
 
           {/* Auth Shortcut Button */}
-          {isLoggedIn ? (
+          {user ? (
             <Link
               to="/dashboard"
               className="bg-white text-black px-2 py-1 rounded hover:opacity-80 transition"

@@ -1,4 +1,15 @@
 export default function CleanedDataPreview({ cleanedData }) {
+  if (!Array.isArray(cleanedData)) {
+    return (
+      <div className="mb-4">
+        <h2 className="flex justify-center text-xl font-semibold mb-2">
+          Cleaned Data (Preview)
+        </h2>
+        <p className="text-center text-sm text-gray-600">No data to display.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-4">
       <h2 className="flex justify-center text-xl font-semibold mb-2">
