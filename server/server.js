@@ -8,12 +8,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 // Load global middleware first
-const allowedOrigins = [
-  process.env.CLIENT_URL || "https://aianalyst.netlify.app",
-  "http://localhost:5173",
-  "https://aianalyst.netlify.app",
-  "http://localhost:4174",
-];
+const allowedOrigins = [process.env.CLIENT_URL];
 
 app.use(
   cors({
