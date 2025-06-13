@@ -1,7 +1,7 @@
 import { useState } from "react";
 import authService from "../services/authService";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,13 +11,20 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
       await authService.register(email, password);
-      alert("User registered. Now log in.");
-      navigate("/dashboard");
+      const loginResponse = await authService.login(email, password);
+
+      // Redirect the user after successful login
+      if (loginResponse.token) {
+        navigate("/welcome");
+      } else {
+        alert("Login failed after registration.");
+      }
     } catch (err) {
       console.error("Registration error:", err);
       alert("Registration failed.");
     }
   };
+  //once registered need to keep the user logged in under the new account created just like in the login page
 
   return (
     <div className="max-w-md mx-auto mt-16 p-6 border rounded-xl shadow bg-white">
@@ -44,9 +51,9 @@ export default function RegisterPage() {
       </form>
       <p className="text-sm text-center mt-4">
         Already have an account?{" "}
-        <a href="/login" className="text-blue-600 hover:underline font-medium">
+        <Link to="/login" className="text-blue-600 hover:underline font-medium">
           Login here
-        </a>
+        </Link>
       </p>
     </div>
   );

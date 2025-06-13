@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -55,12 +56,12 @@ function LoginPage() {
       </form>
       <p className="text-sm text-center mt-4">
         Don't have an account?{" "}
-        <a
-          href="/register"
+        <Link
+          to="/register"
           className="text-blue-600 hover:underline font-medium"
         >
           Register here
-        </a>
+        </Link>
       </p>
     </div>
   );

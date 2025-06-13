@@ -21,6 +21,7 @@
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
+    "morgan": "^1.10.0",
     "multer": "^2.0.0",
     "npm": "^11.4.1",
     "openai": "^4.103.0",

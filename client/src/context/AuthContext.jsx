@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
 
   const login = async ({ email, password }) => {
     const res = await fetch(
-      "https://server-aianalyst.up.railway.app/api/auth/login",
+      import.meta.env.VITE_API_BASE_URL + "/api/auth/login",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

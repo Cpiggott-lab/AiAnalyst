@@ -18,7 +18,7 @@ class ProjectsService {
 
   async getAllProjects() {
     try {
-      const res = await this.api.get("/projects");
+      const res = await this.api.get("/api/projects");
       return res.data;
     } catch (err) {
       console.error(
@@ -31,7 +31,7 @@ class ProjectsService {
 
   async getProjectById(id) {
     try {
-      const res = await this.api.get(`/projects/${id}`);
+      const res = await this.api.get(`/api/projects/${id}`);
       return res.data;
     } catch (err) {
       console.error(
@@ -44,7 +44,7 @@ class ProjectsService {
 
   async generateSummary(id) {
     try {
-      const res = await this.api.post(`/projects/${id}/summary`);
+      const res = await this.api.post(`/api/projects/${id}/summary`);
       console.log("generateSummary response:", res.data);
       return res.data.summary;
     } catch (err) {
@@ -63,9 +63,9 @@ class ProjectsService {
       formData.append("name", name);
       formData.append("prompt", prompt);
 
-      const res = await this.api.post("/projects/upload", formData, {
+      const res = await this.api.post("/api/projects/upload", formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "/multipart/form-data",
         },
       });
       return res.data;
@@ -77,7 +77,7 @@ class ProjectsService {
 
   async askQuestion(projectId, question) {
     try {
-      const res = await this.api.post(`/projects/${projectId}/question`, {
+      const res = await this.api.post(`/api/projects/${projectId}/question`, {
         question,
       });
       return res.data;
@@ -92,7 +92,7 @@ class ProjectsService {
 
   async deleteProject(id) {
     try {
-      const res = await this.api.delete(`/projects/${id}`);
+      const res = await this.api.delete(`/api/projects/${id}`);
       return res.data;
     } catch (err) {
       console.error(
@@ -105,7 +105,7 @@ class ProjectsService {
 
   async generateChartData(id) {
     try {
-      const res = await this.api.get(`/projects/${id}/chartdata-universal`);
+      const res = await this.api.get(`/api/projects/${id}/chartdata-universal`);
       return res.data;
     } catch (err) {
       console.error(
@@ -118,7 +118,7 @@ class ProjectsService {
 
   async updateNote(id, note) {
     try {
-      const res = await this.api.put(`/projects/${id}/note`, { note });
+      const res = await this.api.put(`/api/projects/${id}/note`, { note });
       return res.data;
     } catch (err) {
       console.error("Error updating note:", err.response?.data || err.message);
