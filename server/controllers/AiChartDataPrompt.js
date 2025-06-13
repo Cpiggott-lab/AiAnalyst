@@ -71,7 +71,7 @@ ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
       ],
     });
 
-    // Parse and sanitize the response
+    // Parse and clean the response
     let openAIContent = response.choices[0]?.message?.content || "";
     openAIContent = openAIContent.trim();
 
@@ -98,15 +98,15 @@ ${JSON.stringify(project.cleanedData.slice(0, 50), null, 2)}
         .json({ error: "Failed to parse chart data JSON." });
     }
 
-    // Enforce top 10 for pie/bar charts to reduce clutter
+    // only declared amount to reduce clutter on charts
     if (Array.isArray(chartData.recommendedCharts)) {
       chartData.recommendedCharts = chartData.recommendedCharts.map((chart) => {
         if (
           ["bar", "pie"].includes(chart.type) &&
           Array.isArray(chart.data) &&
-          chart.data.length > 10
+          chart.data.length > 8
         ) {
-          return { ...chart, data: chart.data.slice(0, 10) };
+          return { ...chart, data: chart.data.slice(0, 8) };
         }
         return chart;
       });
