@@ -2,7 +2,6 @@ const fs = require("fs");
 const Papa = require("papaparse");
 const Project = require("../models/Project");
 const { generateSummary } = require("./AiSummaryPrompt");
-const { generateChartDataUniversal } = require("./AiChartDataPrompt");
 
 exports.uploadHandler = async (req, res) => {
   try {
@@ -30,18 +29,11 @@ exports.uploadHandler = async (req, res) => {
 
     fs.unlinkSync(filePath);
 
-    // Trigger AI-based summary generation
     await generateSummary({
       projectId: project._id,
       userId: req.user.id,
-      prompt: req.body.prompt, // Pass prompt correctly
+      prompt: req.body.prompt,
     });
-
-    // // Generate chart data
-    // await generateChartDataUniversal({
-    //   projectId: project._id,
-    //   userId: req.user.id,
-    // });
 
     res.json(project);
   } catch (err) {
@@ -49,31 +41,26 @@ exports.uploadHandler = async (req, res) => {
     res.status(500).json({ error: "Failed to upload project" });
   }
 };
-const mongoose = require("mongoose");
 
 exports.getAllProjects = async (req, res) => {
   try {
     const page = Number(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
-    console.log("API response:", res.data); // log this
-
     if (!req.user || !req.user.id) {
       return res
         .status(401)
         .json({ error: "Unauthorized: User not found in request" });
     }
-
-    console.log("Fetching projects for user:", req.user.id, "Page:", page);
-
     const projects = await Project.find({ userId: req.user.id })
-      .select("name prompt summary notes createdAt")
+      .select("name prompt summary notes cleanedData createdAt")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const total = await Project.countDocuments({ userId: req.user.id });
+    console.log("projects", projects[0]);
 
+    const total = await Project.countDocuments({ userId: req.user.id });
     res.json({
       projects,
       total,
