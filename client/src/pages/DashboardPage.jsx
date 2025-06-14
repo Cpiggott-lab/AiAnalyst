@@ -9,6 +9,7 @@ import SummaryCard from "../components/SummaryCard";
 import CleanedDataPreview from "../components/CleanedDataPreview";
 import DownloadButton from "../components/DownloadButton";
 import { SidebarProvider } from "../components/ui/sidebar";
+import UploadPage from "./UploadPage";
 
 export default function DashboardWithPreviewPage() {
   const [projects, setProjects] = useState([]);
@@ -123,7 +124,7 @@ export default function DashboardWithPreviewPage() {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen">
+      <div className="flex h-screen ">
         <div className="w-[20vw] bg-white text-black border-r flex-shrink-0 flex flex-col">
           <div className="p-4 border-b">
             <button
@@ -161,25 +162,25 @@ export default function DashboardWithPreviewPage() {
           </div>
         </div>
 
-        <main className="w-[80vw] overflow-y-auto p-6 bg-gray-50 text-black">
+        <main className="flex w-[80vw] overflow-y-auto pt-0 mt-0 text-black bg-black">
           {!selectedProject ? (
-            <div className="text-black pt-8 rounded-xl text-center h-full flex items-start justify-center">
-              Select a project from the sidebar.
+            <div className="flex flex-col items-center justify-start w-[80vw] h-full bg-black pt-0 space-y-8">
+              <div className="bg-white text-black rounded-lg shadow-md p-4 w-[80vw] max-w-2xl">
+                <p className="text-lg text-center">
+                  Select a project from the sidebar or upload a new project
+                  below.
+                </p>
+              </div>
+              <UploadPage />
             </div>
           ) : (
-            <div className="w-full max-w-[1100px] mx-auto px-4">
-              <h1 className="flex justify-center text-2xl font-bold mb-2">
+            <div className="w-full max-w-[1500px] mx-auto px-4 bg-black">
+              {/* <h1 className="flex justify-center text-2xl font-bold mb-2">
                 {selectedProject.name}
               </h1>
               <p className="flex justify-center text-sm mb-4">
                 Date: {new Date(selectedProject.createdAt).toLocaleDateString()}
-              </p>
-
-              <NotesSection
-                key={selectedProject._id}
-                projectId={selectedProject._id}
-                initialNotes={selectedProject.notes || []}
-              />
+              </p> */}
 
               <SummaryCard
                 summary={selectedProject.summary}
@@ -199,7 +200,11 @@ export default function DashboardWithPreviewPage() {
                 charts={selectedProject.chartData?.recommendedCharts}
                 loading={!selectedProject.chartData}
               />
-
+              <NotesSection
+                key={selectedProject._id}
+                projectId={selectedProject._id}
+                initialNotes={selectedProject.notes || []}
+              />
               <CleanedDataPreview cleanedData={selectedProject.cleanedData} />
 
               <div className="flex flex-row gap-4 mt-8 justify-between">

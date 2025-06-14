@@ -1,78 +1,72 @@
-# AiAnalyst 🧠📊
+# AiAnalyst
 
-**AiAnalyst** is an AI-powered data intelligence platform that transforms raw CSV data into actionable insights. Built with the MERN stack (MongoDB, Express, React, Node.js) and OpenAI, AiAnalyst allows users to upload datasets, get auto-generated summaries, ask analytical questions, and visualize their findings—all through an intuitive web interface.
+[Try AiAnalyst Live](https://aianalyst.netlify.app/
+
+AiAnalyst is a full-stack MERN application that converts CSV datasets into actionable insights. Users can register, upload CSV files, and let the app generate summaries and chart recommendations using the OpenAI API. The dashboard allows you to view projects, add notes, and ask follow-up questions about your data.
 
 ---
 
-## 🚀 Features
+## 🔧 Features
 
-- 🔐 **User Authentication** — Register, login, and securely manage your data.
-- 📁 **CSV Upload** — Drag-and-drop or select CSV files for instant ingestion.
-- 🤖 **AI-Powered Summaries** — Receive smart summaries of your data using OpenAI.
-- ❓ **Ask the AI** — Type custom questions about your dataset and get contextual answers.
-- 📊 **Dashboard View** — See all your uploaded projects, manage them, and get insights.
-- 🗑️ **Delete Projects** — Clean up and manage data with one click.
-- ⚡ **Responsive UI** — Fast, mobile-ready interface built with Tailwind CSS and React Router.
+- **Authentication** – Register/login with secure JWT-based tokens
+- **CSV Upload** – Drag-and-drop upload with PapaParse backend cleaning
+- **AI Summaries & Q&A** – Executive summaries and Q&A powered by OpenAI
+- **Chart Suggestions** – Bar, pie, line, and histogram suggestions in JSON format
+- **Notes and Download** – Add notes to each project and download cleaned data
+- **Responsive UI** – Built with React, Tailwind CSS, and Recharts
 
 ---
 
 ## 🧱 Tech Stack
 
-| Layer        | Tools                     |
-| ------------ | ------------------------- |
-| Frontend     | React, Vite, Tailwind CSS |
-| Backend      | Node.js, Express.js       |
-| Database     | MongoDB with Mongoose     |
-| AI Engine    | OpenAI API (GPT-4)        |
-| File Parsing | PapaParse, Multer         |
-| Auth         | JWT + Context API         |
+- **Frontend**: React + Vite, Tailwind CSS, Recharts
+- **Backend**: Node.js + Express.js, MongoDB via Mongoose
+- **AI Integration**: OpenAI API
+- **Authentication**: JWT (stored via cookies & localStorage)
 
 ---
 
-## 📂 Folder Structure
+## 📁 Directory Overview
 
-ai-analyst/
-├── client/ # React frontend
-│ ├── components/ # Reusable UI parts
-│ ├── context/ # Auth provider
-│ ├── pages/ # Route pages (Dashboard, Upload, etc.)
-│ ├── services/ # Axios-based API wrappers
-│ └── App.jsx
-├── server/ # Node + Express backend
-│ ├── routes/ # API routes (auth, projects)
-│ ├── models/ # Mongoose schemas
-│ ├── middleware/ # JWT auth checker
-│ ├── utils/ # OpenAI logic & CSV parsing
-│ └── app.js
+```
+
+/client   – React frontend (components, pages, hooks, services)
+/server   – Express backend (routes, controllers, models, middleware)
+
+```
 
 ---
 
-## 🛠️ Getting Started
+## 🚀 Setup Instructions
 
 ### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/your-username/ai-analyst.git
 cd ai-analyst
+```
 
-2. Environment Setup
+### 2. Environment Variables
 
-Backend .env file (inside /server):
+Create a `.env` file inside the `/server` directory:
 
+```
 PORT=5001
 MONGO_URI=your_mongo_connection_string
 JWT_SECRET=your_jwt_secret
 OPENAI_API_KEY=your_openai_key
+CLIENT_URL=http://localhost:5173
+```
 
-Frontend .env file (inside /client):
+Create a `.env` file inside the `/client` directory:
 
-VITE_API_URL=http://localhost:5001
+```
+VITE_API_BASE_URL=http://localhost:5001
+```
 
+### 3. Install Dependencies
 
-⸻
-
-3. Install Dependencies
-
+```bash
 # Backend
 cd server
 npm install
@@ -80,81 +74,81 @@ npm install
 # Frontend
 cd ../client
 npm install
+```
 
+### 4. Run the App
 
-⸻
-
-4. Start the App
-
+```bash
 # Start backend
 cd server
 npm run dev
 
-# In new terminal, start frontend
+# In a separate terminal, start frontend
 cd ../client
 npm run dev
-
-
-⸻
-
-🔑 API Endpoints
-
-Auth
-
-Method	Endpoint	Description
-POST	/api/auth/register	Register a new user
-POST	/api/auth/login	Login and return JWT
-GET	/api/auth/me	Get logged-in user
-
-Projects
-
-Method	Endpoint	Description
-POST	/api/projects/upload	Upload and parse CSV file
-GET	/api/projects	Fetch all user projects
-GET	/api/projects/:id	Get one project by ID
-POST	/api/projects/:id/summary	Generate AI summary
-POST	/api/projects/:id/question	Ask AI a custom question
-DELETE	/api/projects/:id	Delete a project
-
-
-⸻
-
-🧠 How AI is Used
-	•	On upload, OpenAI is called with a custom prompt to summarize the dataset.
-	•	Users can ask follow-up questions, which are routed to OpenAI for context-based answers.
-	•	All AI interactions are designed to be dataset-aware and insight-driven.
-
-⸻
-
-📌 Roadmap
-	•	📈 Charts and visual data graphs
-	•	🧾 Downloadable summaries (PDF/CSV)
-	•	🧠 Smarter AI with user feedback loop
-	•	🔗 Team sharing & collaboration
-	•	🧪 Unit + integration testing
-
-⸻
-
-🧪 Sample Prompt to OpenAI
-
-“You are a business analyst. Summarize the key insights, trends, or outliers in the following dataset in plain English. Focus on areas relevant to sales performance, customer behavior, or operational issues.”
-
-⸻
-
-🧑‍💻 Developed By
-
-Christopher Piggott
-📧 crpiggottburner@gmail.com
-
-⸻
-
-📄 License
-
-Licensed under MIT. Free to use and modify.
-
-⸻
-
-💬 Feedback
-
-Found a bug? Want a feature? Open an issue or submit a PR!
 ```
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+To contribute:
+
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes
+4. Push to the branch
+5. Open a pull request
+
+## 📡 Core API Endpoints
+
+| Method | Endpoint                               | Description                   |
+| ------ | -------------------------------------- | ----------------------------- |
+| POST   | /api/auth/register                     | Register a new user           |
+| POST   | /api/auth/login                        | Login and receive JWT         |
+| GET    | /api/auth/me                           | Verify current user           |
+| POST   | /api/projects/upload                   | Upload CSV and create project |
+| GET    | /api/projects                          | Get all projects for the user |
+| GET    | /api/projects/\:id                     | Get a specific project        |
+| POST   | /api/projects/\:id/summary             | Generate AI executive summary |
+| POST   | /api/projects/\:id/question            | Ask a follow-up question      |
+| GET    | /api/projects/\:id/chartdata-universal | Generate chart suggestions    |
+| PUT    | /api/projects/\:id/note                | Add a note to a project       |
+| DELETE | /api/projects/\:id                     | Delete a project              |
+
+---
+
+## 🤖 How AI Is Used
+
+- On upload, a prompt is sent to OpenAI with a preview of your dataset.
+- An executive summary is generated, identifying key points and trends.
+- Follow-up questions are processed via OpenAI using the same dataset context.
+- Chart suggestions are returned in JSON format for use in Recharts.
+
+---
+
+## 🛣️ Roadmap Ideas
+
+- Advanced visual dashboards with more chart types
+- Exportable summaries (PDF, CSV)
+- Team collaboration and project sharing
+- Automated data quality checks
+- Unit & integration testing
+
+---
+
+## 👤 Author
+
+**Christopher Piggott**
+📧 [crpiggottburner@gmail.com](mailto:crpiggottburner@gmail.com)
+
+---
+
+## 📄 License
+
+MIT License. Contributions and feedback welcome!
+
+![License](https://img.shields.io/badge/license-MIT-blue)
+![OpenAI](https://img.shields.io/badge/OpenAI-integrated-brightgreen)

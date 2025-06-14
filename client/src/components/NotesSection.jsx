@@ -22,8 +22,8 @@ export default function NotesSection({ projectId, initialNotes = [] }) {
   };
 
   return (
-    <div className="mb-10 mt-8 p-4 border rounded-lg bg-gray-50">
-      <div className="bg-white shadow-md rounded-lg p-5">
+    <div className="mb-4 p-4 border rounded-lg bg-gray-50">
+      <div className="bg-white shadow-md rounded-lg p-4 pt-0">
         <h2 className="flex justify-center text-xl font-semibold mb-4 text-gray-800">
           Project Notes
         </h2>
