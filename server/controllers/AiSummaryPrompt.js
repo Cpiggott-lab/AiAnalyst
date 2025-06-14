@@ -17,41 +17,122 @@ exports.generateSummary = async ({ projectId, userId, prompt }) => {
     // Create dataset preview
     const datasetPreview = project.cleanedData.slice(0, 50);
     const datasetString = JSON.stringify(datasetPreview, null, 2);
-
-    // Decide prompt content
     const userPrompt = prompt?.trim();
-    const finalPrompt = userPrompt
-      ? `
-You are an AI business analyst for a startup founder.
-The user uploaded a dataset (preview below) and asked the following:
 
-"${userPrompt}"
+    const finalPrompt = `
+You are an AI business data analyst helping a startup founder interpret a CSV dataset.
 
-Please provide a detailed executive summary with specific patterns, insights, and data-driven suggestions. 
-If assumptions are needed, clearly state them. Use clear bullet points or short paragraphs.
+Below is a preview of the dataset (first 50 rows):
 
-Dataset preview:
 ${datasetString}
-      `
-      : `
-You are a business data analyst. Analyze the following lead data and return an executive summary that includes:
 
-1. A high-level description of the data (e.g., number of records, common fields).
-2. Key patterns or trends that could be visualized in charts. Focus on:
-   - Lead source distribution
-   - Deal stage distribution
-   - Most common companies or lead owners (top 5)
-   - Email or phone availability stats
-3. Any obvious data quality issues (e.g. missing fields, duplicates).
+The user has optionally provided a custom analysis request:
+"${userPrompt || "No specific request. Provide a standard executive summary."}"
 
-Present your findings in clear bullet points, emphasizing data-driven insights that can be used to guide sales strategy or dashboard design.
+---
 
-Here is the lead data in JSON:
-${datasetString}
-      `;
+Please respond **strictly in semantic HTML** with **inline CSS styling** for clean rendering inside a React component using \`dangerouslySetInnerHTML\`. Do **not return Markdown**, plain text, or inferred UI components.
+
+---
+
+### ✅ REQUIRED STRUCTURE:
+
+Wrap all content in a single \`<section>\`. Use **five blocks**, each inside a div with class \`summary-block\`. Keep spacing tight and layout clean.
+
+Here’s the exact format you must use:
+
+<style>
+  h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  h2 {
+    font-size: 1.1rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.2rem;
+    color: #1f2937;
+  }
+  p {
+    font-size: 0.95rem;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.4;
+    color: #111827;
+  }
+  ul {
+    padding-left: 1.2rem;
+    margin: 0;
+    list-style-type: disc;
+  }
+  li {
+    margin-bottom: 0.15rem;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    color: #374151;
+  }
+  .summary-block {
+    background-color: #f9fafb;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-left: 4px solid #000000;
+    border-radius: 0.375rem;
+  }
+</style>
+
+<section>
+  <h1>Executive Summary</h1>
+
+  <div class="summary-block">
+    <h2>Overall Summary</h2>
+    <p>Provide a rich, 2–3 sentence overview of the dataset as a whole. Focus on major patterns, purpose, and usefulness of the data.</p>
+  </div>
+
+  <div class="summary-block">
+    <h2>Overview</h2>
+    <p>Include total record count, key fields/columns, and types of information available.</p>
+  </div>
+
+  <div class="summary-block">
+    <h2>Key Insights</h2>
+    <ul>
+      <li>Identify high-level patterns (e.g., most frequent brands, average pricing bands).</li>
+      <li>Call out distributions or comparisons suitable for charts (e.g., segment mix, deal stages).</li>
+      <li>Mention contact info completeness (email/phone) if present.</li>
+    </ul>
+  </div>
+
+  <div class="summary-block">
+    <h2>Data Quality Issues</h2>
+    <ul>
+      <li>Flag any issues like nulls, inconsistent casing, duplicates, or formatting differences.</li>
+      <li>If assumptions were needed, state them clearly (e.g., inferred fields, grouped values).</li>
+    </ul>
+  </div>
+
+  <div class="summary-block">
+    <h2>Recommendations</h2>
+    <ul>
+      <li>Suggest meaningful charts or KPIs to display (e.g., bar chart for brand count, pie for segment).</li>
+      <li>Propose ways to enhance the dataset (e.g., enrich with battery size, normalize plug types).</li>
+    </ul>
+  </div>
+</section>
+
+---
+
+### 🔒 HARD CONSTRAINTS:
+
+- **Do not infer user goals** beyond the data or prompt.
+- **Do not return JSON, JSX, or Markdown**.
+- **Do not hallucinate chart names or metrics** not clearly suggested by the dataset preview.
+- **Avoid repeating section labels or summaries.**
+
+This will be rendered directly into a live UI. Ensure the output is clean, minimal, and consistent with semantic HTML standards.
+`;
 
     const response = await openai.chat.completions.create({
-      model: "o4-mini", // You can change to "gpt-4" if desired
+      model: "o4-mini", // or "gpt-4"
       messages: [
         { role: "system", content: "You are a helpful business analyst." },
         { role: "user", content: finalPrompt },
@@ -62,7 +143,6 @@ ${datasetString}
       response.choices[0]?.message?.content || "No summary generated.";
     project.summary = summary;
 
-    // Optionally save the prompt used
     if (userPrompt) project.prompt = userPrompt;
 
     await project.save();
@@ -96,7 +176,7 @@ ${project.summary}
 
 The user now asks: "${userQuestion}"
 
-Please answer the user's question clearly, referencing only the provided summary and maintaining a professional tone.
+Please answer the user's question clearly and professionally, referencing only the provided summary. Avoid using external information or assumptions not contained in the summary.
     `;
 
     const response = await openai.chat.completions.create({

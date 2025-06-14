@@ -9,6 +9,7 @@ import SummaryCard from "../components/SummaryCard";
 import CleanedDataPreview from "../components/CleanedDataPreview";
 import DownloadButton from "../components/DownloadButton";
 import { SidebarProvider } from "../components/ui/sidebar";
+import UploadPage from "./UploadPage";
 
 export default function DashboardWithPreviewPage() {
   const [projects, setProjects] = useState([]);
@@ -163,8 +164,14 @@ export default function DashboardWithPreviewPage() {
 
         <main className="flex w-[80vw] overflow-y-auto pt-0 mt-0 text-black bg-black">
           {!selectedProject ? (
-            <div className="flex w-[80vw] text-white bg-black text-center h-full flex items-start justify-center">
-              Select a project from the sidebar.
+            <div className="flex flex-col items-center justify-start w-[80vw] h-full bg-black pt-0 space-y-8">
+              <div className="bg-white text-black rounded-lg shadow-md p-4 w-[80vw] max-w-2xl">
+                <p className="text-lg text-center">
+                  Select a project from the sidebar or upload a new project
+                  below.
+                </p>
+              </div>
+              <UploadPage />
             </div>
           ) : (
             <div className="w-full max-w-[1500px] mx-auto px-4 bg-black">

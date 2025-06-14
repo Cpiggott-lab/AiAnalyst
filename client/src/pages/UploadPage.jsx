@@ -58,7 +58,7 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="flex justify-center py-16">
+    <div className="flex justify-center py-4">
       <div className="bg-white rounded-lg shadow-md p-8 w-[80vw] max-w-2xl">
         {!isUploading && (
           <h1 className="text-3xl font-bold mb-6 text-center">
