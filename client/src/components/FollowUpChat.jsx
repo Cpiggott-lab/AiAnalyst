@@ -6,12 +6,15 @@ export default function FollowUpChat({ projectId, summary }) {
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Handles asking the follow-up question
   const handleAsk = async (e) => {
     e.preventDefault();
-    if (!question.trim()) return;
 
+    if (!question.trim()) return; // skip empty input
     setLoading(true);
+
     try {
+      // Send question to backend for AI answer
       const res = await projectsService.askQuestion(projectId, question);
       setAnswer(res.answer);
     } catch (err) {

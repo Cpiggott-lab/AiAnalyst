@@ -5,20 +5,24 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Generates an executive summary using OpenAI
 exports.generateSummary = async ({ projectId, userId, prompt }) => {
   try {
+    // Find project by ID
     const project = await Project.findById(projectId);
     if (!project) throw new Error("Project not found");
 
+    // Only allow the owner of the project to generate a summary
     if (project.userId.toString() !== userId) {
       throw new Error("Unauthorized access");
     }
 
-    // Create dataset preview
+    // Take first 50 rows from cleaned data to keep the prompt lightweight
     const datasetPreview = project.cleanedData.slice(0, 50);
     const datasetString = JSON.stringify(datasetPreview, null, 2);
     const userPrompt = prompt?.trim();
 
+    // Build prompt with formatting, layout, and constraints for clean HTML output
     const finalPrompt = `
 You are an AI business data analyst helping a startup founder interpret a CSV dataset.
 
@@ -131,6 +135,7 @@ Here’s the exact format you must use:
 This will be rendered directly into a live UI. Ensure the output is clean, minimal, and consistent with semantic HTML standards.
 `;
 
+    // Send request to OpenAI with the structured prompt
     const response = await openai.chat.completions.create({
       model: "o4-mini", // or "gpt-4"
       messages: [
@@ -139,10 +144,12 @@ This will be rendered directly into a live UI. Ensure the output is clean, minim
       ],
     });
 
+    // Get the summary output (fallback if empty)
     const summary =
       response.choices[0]?.message?.content || "No summary generated.";
-    project.summary = summary;
 
+    // Save summary and user prompt to the project
+    project.summary = summary;
     if (userPrompt) project.prompt = userPrompt;
 
     await project.save();
@@ -154,11 +161,14 @@ This will be rendered directly into a live UI. Ensure the output is clean, minim
   }
 };
 
+// Allows user to ask follow-up questions about the summary
 exports.askSummaryQuestion = async (req, res) => {
   try {
+    // Find the project
     const project = await Project.findById(req.params.id);
     if (!project) return res.status(404).json({ error: "Project not found" });
 
+    // Only allow owner of the project to ask questions
     if (project.userId.toString() !== req.user.id) {
       return res.status(403).json({ error: "Unauthorized access" });
     }
@@ -168,6 +178,7 @@ exports.askSummaryQuestion = async (req, res) => {
       return res.status(400).json({ error: "Question is required" });
     }
 
+    // Build a follow-up prompt using the existing summary
     const prompt = `
 You are a business data analyst. The user has already received the following summary of a dataset:
 
@@ -179,6 +190,7 @@ The user now asks: "${userQuestion}"
 Please answer the user's question clearly and professionally, referencing only the provided summary. Avoid using external information or assumptions not contained in the summary.
     `;
 
+    // Send follow-up prompt to OpenAI
     const response = await openai.chat.completions.create({
       model: "o4-mini",
       messages: [
@@ -187,6 +199,7 @@ Please answer the user's question clearly and professionally, referencing only t
       ],
     });
 
+    // Send back the answer or fallback
     const answer =
       response.choices[0]?.message?.content || "No answer generated.";
     res.json({ answer });

@@ -6,16 +6,16 @@ export default function NotesSection({ projectId, initialNotes = [] }) {
   const [notes, setNotes] = useState(initialNotes);
   const [noteSaving, setNoteSaving] = useState(false);
 
+  // Save note to backend and update notes list
   const saveNote = async () => {
-    if (!note.trim()) return;
+    if (!note.trim()) return; // ignore empty input
     setNoteSaving(true);
     try {
       const result = await projectsService.updateNote(projectId, note);
-      setNotes(result.notes);
-      setNote("");
+      setNotes(result.notes); // update notes with response
+      setNote(""); // clear input
     } catch (err) {
       console.error("Failed to save note:", err);
-      alert("Failed to save note.");
     } finally {
       setNoteSaving(false);
     }
@@ -45,6 +45,7 @@ export default function NotesSection({ projectId, initialNotes = [] }) {
         >
           {noteSaving ? "Saving..." : "Save Note"}
         </button>
+
         {notes.length > 0 && (
           <div className="mt-6">
             <h3 className="text-md font-semibold text-gray-700 mb-2">
