@@ -7,10 +7,12 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Check localStorage on mount to restore user session
     try {
       const storedUser = localStorage.getItem("user");
       const storedToken = localStorage.getItem("token");
 
+      // Helper to confirm if localStorage "user" is valid JSON
       const isValidJson = (str) => {
         try {
           const parsed = JSON.parse(str);
@@ -20,6 +22,7 @@ export function AuthProvider({ children }) {
         }
       };
 
+      // Only restore user if both token and valid user object exist
       if (
         storedUser &&
         storedToken &&
@@ -51,6 +54,7 @@ export function AuthProvider({ children }) {
           withCredentials: true,
         }
       );
+      // Automatically set user after successful registration
       setUser(data.data.user);
     } catch (err) {
       console.error("Register error:", err.response?.data || err.message);
@@ -59,6 +63,7 @@ export function AuthProvider({ children }) {
   };
 
   const login = async ({ email, password }) => {
+    // Use fetch instead of axios to POST login data
     const res = await fetch(
       import.meta.env.VITE_API_BASE_URL + "/api/auth/login",
       {
@@ -72,16 +77,22 @@ export function AuthProvider({ children }) {
 
     const data = await res.json();
 
+    // Basic validation on response payload
     if (!data.user || !data.user._id || !data.token) {
       throw new Error("Invalid login response");
     }
+
+    // Store token + user locally and update context
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
     setUser(data.user);
+
+    // Confirm valid session from server
     await verify();
   };
 
   const logout = () => {
+    // Clear both token and user from storage and context
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
@@ -95,6 +106,7 @@ export function AuthProvider({ children }) {
           withCredentials: true,
         }
       );
+      // Update context if valid user is returned
       if (res.data.id) setUser(res.data);
       else {
         console.warn("User verification failed - clearing auth state.");

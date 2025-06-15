@@ -1,31 +1,32 @@
 import { useEffect, useState } from "react";
-import authService from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext"; // Access authentication context
 
 export default function RegisterPage() {
+  // Local state to hold form inputs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const { register, user } = useAuth();
 
+  const navigate = useNavigate(); // Used to navigate programmatically
+  const { register, user } = useAuth(); // Get the register function and current user from context
+
+  // Handles form submission
   const handleRegister = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent page refresh
     try {
-      await register(email, password);
+      await register(email, password); // Attempt to register using the context
     } catch (err) {
       console.error("Registration error:", err);
-      alert("Registration failed.");
+      alert("Registration failed."); // Notify user of failure
     }
   };
 
+  // Check if user is already registered/logged in
   const id = user?._id;
   useEffect(() => {
-    if (user && user._id) navigate("/");
+    if (user && user._id) navigate("/"); // Redirect to homepage if logged in
   }, [id]);
-
-  //once registered need to keep the user logged in under the new account created just like in the login page
 
   return (
     <div className="max-w-md mx-auto mt-16 p-6 border rounded-xl shadow bg-white">

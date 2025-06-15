@@ -12,38 +12,42 @@ import { SidebarProvider } from "../components/ui/sidebar";
 import UploadPage from "./UploadPage";
 
 export default function DashboardWithPreviewPage() {
+  // State variables for managing project list, selection, loading, etc.
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const { projectId } = useParams();
-  const navigate = useNavigate();
 
+  const { projectId } = useParams(); // Get project ID from URL
+  const navigate = useNavigate(); // For redirecting
+
+  // Fetch all projects on mount or when projectId changes
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const data = await projectsService.getAllProjects();
+        const data = await projectsService.getAllProjects(); // API call
         setProjects(data.projects);
         setFilteredProjects(data.projects);
+
         if (projectId) {
           const match = data.projects.find((p) => p._id === projectId);
           console.log("match", match);
-
           if (match) setSelectedProject(match);
         }
       } catch (err) {
         console.log("error", err);
-
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
+
     fetchProjects();
   }, [projectId]);
 
+  // Search bar logic for filtering projects
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -52,6 +56,7 @@ export default function DashboardWithPreviewPage() {
     );
   };
 
+  // Delete project and update state
   const handleDelete = async (id) => {
     try {
       await projectsService.deleteProject(id);
@@ -62,13 +67,15 @@ export default function DashboardWithPreviewPage() {
         setSelectedProject(null);
       }
     } catch (err) {
-      alert("Could not delete project.");
+      console.error("Failed to delete project:", err);
     }
   };
 
+  // Fetch summary and chart data for selected project
   useEffect(() => {
     if (!selectedProject) return;
 
+    // If summary doesn't exist, generate it
     if (!selectedProject.summary) {
       projectsService
         .generateSummary(selectedProject._id)
@@ -86,6 +93,7 @@ export default function DashboardWithPreviewPage() {
         });
     }
 
+    // If chartData doesn't exist or is empty, generate it
     if (
       !selectedProject.chartData?.recommendedCharts ||
       selectedProject.chartData.recommendedCharts.length === 0
@@ -104,6 +112,7 @@ export default function DashboardWithPreviewPage() {
     }
   }, [selectedProject]);
 
+  // Spinner while loading
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -118,6 +127,7 @@ export default function DashboardWithPreviewPage() {
     );
   }
 
+  // Error display
   if (error) {
     return <div className="text-red-600 text-center py-10">{error}</div>;
   }
@@ -145,7 +155,6 @@ export default function DashboardWithPreviewPage() {
 
           <div className="p-4 overflow-y-auto flex-1">
             {filteredProjects &&
-              filteredProjects &&
               filteredProjects.map((project) => (
                 <div
                   key={project._id}
@@ -175,13 +184,6 @@ export default function DashboardWithPreviewPage() {
             </div>
           ) : (
             <div className="w-full max-w-[1500px] mx-auto px-4 bg-black">
-              {/* <h1 className="flex justify-center text-2xl font-bold mb-2">
-                {selectedProject.name}
-              </h1>
-              <p className="flex justify-center text-sm mb-4">
-                Date: {new Date(selectedProject.createdAt).toLocaleDateString()}
-              </p> */}
-
               <SummaryCard
                 summary={selectedProject.summary}
                 loading={!selectedProject.summary}
@@ -200,11 +202,13 @@ export default function DashboardWithPreviewPage() {
                 charts={selectedProject.chartData?.recommendedCharts}
                 loading={!selectedProject.chartData}
               />
+
               <NotesSection
                 key={selectedProject._id}
                 projectId={selectedProject._id}
                 initialNotes={selectedProject.notes || []}
               />
+
               <CleanedDataPreview cleanedData={selectedProject.cleanedData} />
 
               <div className="flex flex-row gap-4 mt-8 justify-between">

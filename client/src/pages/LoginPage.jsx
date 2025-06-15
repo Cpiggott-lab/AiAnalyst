@@ -4,23 +4,31 @@ import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 function LoginPage() {
+  // Local state for form inputs and error message
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login, user } = useAuth();
-  const navigate = useNavigate();
 
+  // Get login method and current user from auth context
+  const { login, user } = useAuth();
+
+  const navigate = useNavigate(); // Used to redirect after login
+
+  // Form submit handler
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+    e.preventDefault(); // Prevent form from refreshing the page
+    setError(""); // Clear previous error message
+
     try {
+      // Attempt login with credentials
       await login({ email, password });
     } catch (err) {
       console.error("Login failed:", err.message);
-      setError("Invalid email or password.");
+      setError("Invalid email or password."); // Show user-friendly error
     }
   };
 
+  // If already logged in, redirect to home
   const id = user?._id;
   useEffect(() => {
     if (user && user._id) navigate("/");
