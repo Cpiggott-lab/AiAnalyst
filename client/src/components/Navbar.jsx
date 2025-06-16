@@ -19,13 +19,51 @@ export default function Navbar() {
           <h1 className="text-2xl font-bold hover:opacity-80">AiAnalyst</h1>
         </Link>
 
-        <div className="flex items-center gap-4">
-          {/* Headless UI Popover */}
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-4">
+          {user ? (
+            <>
+              <Link to="/upload" className="hover:opacity-80">
+                Upload
+              </Link>
+              <Link to="/dashboard" className="hover:opacity-80">
+                Dashboard
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="hover:opacity-80">
+                Login
+              </Link>
+              <Link to="/register" className="hover:opacity-80">
+                Register
+              </Link>
+            </>
+          )}
+          <Link to="/about" className="hover:opacity-80">
+            About
+          </Link>
+          <Link to="/contact" className="hover:opacity-80">
+            Contact
+          </Link>
+
+          {user && (
+            <button
+              onClick={handleLogout}
+              className="hover:opacity-80 border border-white rounded px-2 py-1"
+            >
+              Logout
+            </button>
+          )}
+        </div>
+
+        {/* Mobile Hamburger Menu */}
+        <div className="flex items-center gap-4 md:hidden">
           <Popover className="relative">
             <Popover.Button className="w-10 h-10 flex items-center justify-center focus:outline-none">
               <img
                 src={moreIcon}
-                alt="Burger menu icon"
+                alt="Menu"
                 className="w-8 h-8 object-contain cursor-pointer hover:opacity-80"
               />
             </Popover.Button>
@@ -75,23 +113,6 @@ export default function Navbar() {
               )}
             </Popover.Panel>
           </Popover>
-
-          {/* Auth Shortcut Button */}
-          {user ? (
-            <Link
-              to="/dashboard"
-              className="bg-white text-black px-2 py-1 rounded hover:opacity-80 transition"
-            >
-              Dashboard
-            </Link>
-          ) : (
-            <Link
-              to="/login"
-              className="bg-white text-black px-2 py-1 rounded hover:opacity-80 transition"
-            >
-              Login
-            </Link>
-          )}
         </div>
       </div>
     </nav>
