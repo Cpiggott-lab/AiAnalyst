@@ -63,32 +63,33 @@ export function AuthProvider({ children }) {
   };
 
   const login = async ({ email, password }) => {
-    // Use fetch instead of axios to POST login data
-    const res = await fetch(
-      import.meta.env.VITE_API_BASE_URL + "/api/auth/login",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
+        { email, password },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      const { user, token } = res.data;
+
+      if (!user || !user._id || !token) {
+        throw new Error("Invalid login response");
       }
-    );
 
-    if (!res.ok) throw new Error("Login failed");
+      // Store token user locally and update context
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
 
-    const data = await res.json();
-
-    // Basic validation on response payload
-    if (!data.user || !data.user._id || !data.token) {
-      throw new Error("Invalid login response");
+      // Confirm session from server
+      await verify();
+    } catch (err) {
+      console.error("Login error:", err.response?.data || err.message);
+      throw err;
     }
-
-    // Store token + user locally and update context
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    setUser(data.user);
-
-    // Confirm valid session from server
-    await verify();
   };
 
   const logout = () => {
